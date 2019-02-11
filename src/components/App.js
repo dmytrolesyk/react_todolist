@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Toolbar from './Toolbar'
 import './App.css'
+import AddTaskSection from './AddTaskSection/AddTaskSection'
 
 class App extends Component {
   state = {
@@ -38,6 +39,7 @@ class App extends Component {
                 <Toolbar
                   username={user.username}
                 />
+                <AddTaskSection />
               </div>
             </div>
           </div>
