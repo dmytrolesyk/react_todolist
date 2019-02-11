@@ -1,0 +1,12 @@
+.toolbar {
+  position: relative;
+  padding: 10px;
+  min-height: 55px;
+}
+
+.greeting {
+  position: absolute;
+  left: 10px;
+  color: #6a1979;
+  top: 10px;
+}
