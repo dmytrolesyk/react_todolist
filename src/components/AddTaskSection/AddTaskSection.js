@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import uuid from 'uuid'
 import TitleHolder from '../TitleHolder'
 import TextInputHolder from '../TextInputHolder'
 import Button from '../Button'
@@ -12,7 +14,17 @@ class AddTaskSection extends Component {
 
   onChange = e => this.setState({ [e.target.name]: e.target.value })
 
-  onBtnClick = () => console.log(this.state)
+  onBtnClick = () => {
+    const { addNewTask } = this.props
+    let { task } = this.state
+    const newTask = {
+      id: uuid(),
+      caption: task,
+      completed: false,
+    }
+    addNewTask(newTask)
+    task = ''
+  }
 
   render() {
     const { task } = this.state
@@ -36,6 +48,10 @@ class AddTaskSection extends Component {
       </div>
     )
   }
+}
+
+AddTaskSection.propTypes = {
+  addNewTask: PropTypes.func.isRequired,
 }
 
 export default AddTaskSection

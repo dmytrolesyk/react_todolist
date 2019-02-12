@@ -130,7 +130,6 @@ input[type="checkbox"]:checked + .checkbox-label::after {
   opacity: 0;
   transition: .3s opacity;
   cursor: pointer;
-
 }
 
 
