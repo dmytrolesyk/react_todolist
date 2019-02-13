@@ -1,15 +1,29 @@
+/** @flow */
+
 import React from 'react'
-import PropTypes from 'prop-types'
 import './TextInputHolder.css'
 
-const TextInputHolder = (props) => {
+type Props = {
+  name: string,
+  value: string,
+  placeholder: string,
+  onChange: any=>any,
+  onKeyPress: any=>any,
+  type: string,
+}
+
+const TextInputHolder = (props: Props) => {
   const {
     name,
     value,
     placeholder,
     onChange,
     type,
+    onKeyPress,
   } = props
+  const keyPressHandler = (e) => {
+    if (e.key === 'Enter') onKeyPress()
+  }
   return (
     <div className="input-holder">
       <input
@@ -19,21 +33,11 @@ const TextInputHolder = (props) => {
         placeholder={placeholder}
         onChange={onChange}
         className="input"
+        onKeyPress={keyPressHandler}
       />
     </div>
   )
 }
 
-TextInputHolder.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  type: PropTypes.string,
-}
-
-TextInputHolder.defaultProps = {
-  type: 'text',
-}
 
 export default TextInputHolder

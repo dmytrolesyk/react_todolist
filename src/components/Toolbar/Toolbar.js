@@ -1,12 +1,16 @@
+/** @flow */
+
 import React from 'react'
-import PropTypes from 'prop-types'
 import Button from '../Button'
 import './Toolbar.css'
 
+type Props = {
+  username: string,
+}
 
-const Toolbar = (props) => {
+const Toolbar = (props: Props) => {
   const { username } = props
-  const greeting = `Hello, ${username}`
+  const greeting: string = `Hello, ${username}`
   return (
     <div className="toolbar">
       <div className="greeting">{greeting}</div>
@@ -19,10 +23,6 @@ const Toolbar = (props) => {
       />
     </div>
   )
-}
-
-Toolbar.propTypes = {
-  username: PropTypes.string.isRequired,
 }
 
 export default Toolbar

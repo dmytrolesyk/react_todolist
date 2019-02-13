@@ -1,12 +1,21 @@
+/** @flow */
+
 import React from 'react'
-import PropTypes from 'prop-types'
 import './Button.css'
 
-const Button = (props) => {
+type Props = {
+  color: string,
+  size: string,
+  text: string,
+  onClick: any=>any,
+  optClasses?: string,
+}
+
+const Button = (props: Props) => {
   const {
     color, size, text, onClick, optClasses,
   } = props
-  let className = `${size} ${color}`
+  let className: string = `${size} ${color}`
   if (optClasses) className += ` ${optClasses}`
   return (
     <button
@@ -19,16 +28,7 @@ const Button = (props) => {
   )
 }
 
-Button.propTypes = {
-  color: PropTypes.string.isRequired,
-  size: PropTypes.string,
-  text: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-  optClasses: PropTypes.string,
-}
-
 Button.defaultProps = {
-  size: 'btn-regular',
   optClasses: '',
 }
 

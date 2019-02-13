@@ -1,57 +1,71 @@
+/** @flow */
+
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import uuid from 'uuid'
 import TitleHolder from '../TitleHolder'
 import TextInputHolder from '../TextInputHolder'
 import Button from '../Button'
 
+import type { Task, AcceptsTaskReturnsNothing } from '../../types'
+
 import './AddTaskSection.css'
 
-class AddTaskSection extends Component {
+type Props = {
+  addNewTask: AcceptsTaskReturnsNothing
+}
+
+type State = {
+  taskInput: string,
+}
+
+class AddTaskSection extends Component<Props, State> {
   state = {
-    task: '',
+    taskInput: '',
   }
 
-  onChange = e => this.setState({ [e.target.name]: e.target.value })
+  onChange = (e: any):void => this.setState({ [e.target.name]: e.target.value })
 
-  onBtnClick = () => {
+  addNewTaskHandler = ():void => {
     const { addNewTask } = this.props
-    let { task } = this.state
-    const newTask = {
+    const { taskInput } = this.state
+    if (!taskInput) {
+      alert('You need to input some value')
+      return
+    }
+    const newTask: Task = {
       id: uuid(),
-      caption: task,
+      caption: taskInput,
       completed: false,
     }
     addNewTask(newTask)
-    task = ''
+    this.setState({
+      taskInput: '',
+    })
   }
 
   render() {
-    const { task } = this.state
+    const { taskInput } = this.state
     return (
       <div className="add-task-section">
         <TitleHolder
           title="Add Tasks"
         />
         <TextInputHolder
-          name="task"
-          value={task}
+          name="taskInput"
+          value={taskInput}
           placeholder="Input your Task"
           onChange={this.onChange}
+          onKeyPress={this.addNewTaskHandler}
         />
         <Button
           color="btn-violet"
           size="btn-regular"
           text="Add Task"
-          onClick={this.onBtnClick}
+          onClick={this.addNewTaskHandler}
         />
       </div>
     )
   }
-}
-
-AddTaskSection.propTypes = {
-  addNewTask: PropTypes.func.isRequired,
 }
 
 export default AddTaskSection

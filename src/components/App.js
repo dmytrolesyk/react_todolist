@@ -1,14 +1,26 @@
+/** @flow */
+
 import React, { Component } from 'react'
 import Toolbar from './Toolbar'
-import './App.css'
+
 import AddTaskSection from './AddTaskSection/AddTaskSection'
 import ManageTaskSection from './ManageTaskSection'
 
-class App extends Component {
+import type { User, Task, AcceptsTaskReturnsNothing } from '../types'
+
+import './App.css'
+
+type State = {
+  user: User,
+  tasks: Array<Task>,
+}
+
+class App extends Component<any, State> {
   state = {
     user: {
-      id: 0,
+      id: '0',
       username: 'kevin',
+      token: 'tkn123',
     },
     tasks: [
       {
@@ -29,18 +41,18 @@ class App extends Component {
     ],
   }
 
-  addNewTask = (newTask) => {
+  addNewTask: AcceptsTaskReturnsNothing = (newTask) => {
     this.setState(prevState => ({
       tasks: [
         ...prevState.tasks,
         newTask,
       ],
-    }), () => console.log(this.state))
+    }))
   }
 
   clearTasks = () => this.setState({ tasks: [] })
 
-  updateTask = (updatedTask) => {
+  updateTask: AcceptsTaskReturnsNothing = (updatedTask) => {
     const { tasks } = this.state
     const newTasks = [...tasks]
     const index = newTasks.findIndex(task => task.id === updatedTask.id)
@@ -50,7 +62,7 @@ class App extends Component {
     })
   }
 
-  deleteTask = (id) => {
+  deleteTask = (id: string):void => {
     const { tasks } = this.state
     const newTasks = tasks.filter(task => task.id !== id)
     this.setState({
@@ -69,11 +81,14 @@ class App extends Component {
                 <Toolbar
                   username={user.username}
                 />
-                <AddTaskSection addNewTask={this.addNewTask} />
+                <AddTaskSection
+                  addNewTask={this.addNewTask}
+                />
                 <ManageTaskSection
                   tasks={tasks}
-                  updateTask={this.updateTask}
                   clearTasks={this.clearTasks}
+                  deleteTask={this.deleteTask}
+                  updateTask={this.updateTask}
                 />
               </div>
             </div>

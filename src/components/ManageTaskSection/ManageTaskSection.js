@@ -1,90 +1,131 @@
+/** @flow */
+
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import TitleHolder from '../TitleHolder'
 import Button from '../Button'
 import TextInputHolder from '../TextInputHolder'
 import Tasks from './components/Tasks'
 
+import type { Task, AcceptsTaskReturnsNothing } from '../../types'
+
 import './ManageTaskSection.css'
 
 
-class ManageTaskSection extends Component {
-  constructor(props) {
-    super(props)
+type Props = {
+  tasks: Array<Task>,
+  clearTasks: () => void,
+  deleteTask: (id: string) => void,
+  updateTask: (updatedTask: Task) => void
+}
 
-    const { tasks } = this.props
+type State = {
+  editState: boolean,
+  currentTask: ?Task,
+  filterInput: string,
+  updateInput: string,
+}
+
+class ManageTaskSection extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props)
 
     this.state = {
       editState: false,
       currentTask: null,
-      input: '',
-      tasksToDisplay: [...tasks],
+      filterInput: '',
+      updateInput: '',
     }
   }
 
-  setEditState = (task) => {
+  setEditState: AcceptsTaskReturnsNothing = (task) => {
     this.setState({
       editState: true,
-      currentTask: task.id,
-      input: task.caption,
+      currentTask: task,
+      updateInput: task.caption,
     })
   }
 
-  removeEditState = () => {
+  removeEditState = ():void => {
     this.setState({
       editState: false,
       currentTask: null,
-      input: '',
+      updateInput: '',
     })
   }
 
-  filterTasks = () => {
+  filterTasks = ():Array<Task> => {
     const { tasks } = this.props
-    const { input } = this.state
-    const tasksToDisplay = tasks
-      .filter(task => (parseInt(task.caption.toLowerCase().indexOf(input), 10) !== -1))
-    this.setState({
-      tasksToDisplay,
-    })
+    const { filterInput } = this.state
+    return tasks.filter(task => task.caption.toLowerCase().includes(filterInput.toLowerCase()))
   }
 
-  onChange = (e) => {
-    const { editState } = this.state
+  onChangeFilterInput = (e: any):void => {
     this.setState({
       [e.target.name]: e.target.value,
-    }, !editState ? this.filterTasks : undefined)
+    }, this.filterTasks)
   }
 
-  updateTaskBtnClick = () => {
+  onChangeUpdateInput = (e:any):void => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  updateTaskBtnClick = ():void => {
     const { updateTask } = this.props
-    const { input, currentTask } = this.state
-    const caption = input
-    const id = currentTask
-    updateTask(id, caption)
-    this.removeEditState()
+    const { updateInput, currentTask } = this.state
+    if (currentTask) {
+      const updatedTask = {
+        id: currentTask.id,
+        caption: updateInput,
+        completed: currentTask.completed,
+      }
+      updateTask(updatedTask)
+      this.removeEditState()
+    }
   }
 
-  clearTasksBtnClick = () => {
+  clearTasksBtnClick = ():void => {
     const { clearTasks } = this.props
     clearTasks()
   }
 
   render() {
-    const { input, tasksToDisplay, editState } = this.state
+    const {
+      filterInput,
+      updateInput,
+      editState,
+    } = this.state
+    const { deleteTask, updateTask, tasks } = this.props
+    const tasksToDisplay: Array<Task> = editState ? tasks : this.filterTasks()
     return (
       <div className="manage-tasks-section">
         <TitleHolder
           title="Manage Tasks"
         />
-        <TextInputHolder
-          name="input"
-          value={input}
-          placeholder="Filter Tasks"
-          onChange={this.onChange}
-        />
+        {!editState ? (
+          <TextInputHolder
+            name="filterInput"
+            value={filterInput}
+            placeholder="Filter Tasks"
+            onChange={this.onChangeFilterInput}
+          />
+        ) : null}
+        {editState ? (
+          <TextInputHolder
+            name="updateInput"
+            value={updateInput}
+            placeholder="Update Task"
+            onChange={this.onChangeUpdateInput}
+          />
+        ) : null}
         {tasksToDisplay.length ? (
           <Tasks
             tasks={tasksToDisplay}
+            deleteTask={deleteTask}
+            setEditState={this.setEditState}
+            updateTask={updateTask}
+            removeEditState={this.removeEditState}
           />
         ) : null}
         {!editState ? (
@@ -105,15 +146,18 @@ class ManageTaskSection extends Component {
             onClick={this.updateTaskBtnClick}
           />
         ) : null}
+        {editState ? (
+          <Button
+            color="btn-red"
+            size="btn-regular"
+            text="Cancel Edit"
+            optClasses="btn-clear-tasks"
+            onClick={this.removeEditState}
+          />
+        ) : null}
       </div>
     )
   }
-}
-
-ManageTaskSection.propTypes = {
-  clearTasks: PropTypes.func.isRequired,
-  updateTask: PropTypes.func.isRequired,
-  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
 }
 
 export default ManageTaskSection

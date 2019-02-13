@@ -1,21 +1,42 @@
+/** @flow */
+
 import React from 'react'
-import PropTypes from 'prop-types'
 import Task from './components/Task'
+
+import type { Task as TaskType, AcceptsTaskReturnsNothing } from '../../../../types'
 
 import './Tasks.css'
 
-
-const Tasks = (props) => {
-  const { tasks } = props
-  return (
-    <ul className="tasks-component">
-      {tasks.map(task => <Task key={task.id} task={task} />)}
-    </ul>
-  )
+type Props = {
+  tasks: Array<TaskType>,
+  deleteTask:(id: string) => void,
+  setEditState:AcceptsTaskReturnsNothing,
+  updateTask: AcceptsTaskReturnsNothing,
+  removeEditState:() => void,
 }
 
-Tasks.propTypes = {
-  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
+const Tasks = (props: Props) => {
+  const {
+    tasks,
+    setEditState,
+    deleteTask,
+    updateTask,
+    removeEditState,
+  } = props
+  return (
+    <ul className="tasks-component">
+      {tasks.map(task => (
+        <Task
+          key={task.id}
+          task={task}
+          deleteTask={deleteTask}
+          setEditState={setEditState}
+          updateTask={updateTask}
+          removeEditState={removeEditState}
+        />
+      ))}
+    </ul>
+  )
 }
 
 export default Tasks
