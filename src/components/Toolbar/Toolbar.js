@@ -6,10 +6,11 @@ import './Toolbar.css'
 
 type Props = {
   username: string,
+  logOut: ()=>void,
 }
 
 const Toolbar = (props: Props) => {
-  const { username } = props
+  const { username, logOut } = props
   const greeting: string = `Hello, ${username}`
   return (
     <div className="toolbar">
@@ -19,7 +20,7 @@ const Toolbar = (props: Props) => {
         size="btn-sm"
         text="Log out"
         optClasses="btn-logout"
-        onClick={() => console.log('Test')}
+        onClick={() => logOut()}
       />
     </div>
   )

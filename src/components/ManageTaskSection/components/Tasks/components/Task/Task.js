@@ -4,11 +4,12 @@ import React from 'react'
 import classnames from 'classnames'
 
 import type { Task as TaskType, AcceptsTaskReturnsNothing } from '../../../../../../types'
-
+import http from '../../../../../../utilities/http'
 import './css/Task.css'
 
 type Props = {
   task: TaskType,
+  token: string,
   deleteTask: (id: string)=>void,
   setEditState:AcceptsTaskReturnsNothing,
   updateTask: AcceptsTaskReturnsNothing,
@@ -17,19 +18,27 @@ type Props = {
 
 const Task = ({
   task,
+  token,
   setEditState,
   deleteTask,
   updateTask,
   removeEditState,
 }: Props) => {
-  const { id, caption, completed } = task
-  const checkBoxToggle = ():void => {
+  const { _id, caption, completed } = task
+  const checkBoxToggle = async ():Promise<any> => {
     const toggledTask = {
-      id,
+      _id,
       caption,
       completed: !completed,
     }
-    updateTask(toggledTask)
+    const updatedTask = await http.put('http://localhost:3008/tasks/', toggledTask, `Bearer ${token}`)
+    updateTask(updatedTask)
+  }
+
+  const deleteIconHandler = async (id) => {
+    await http.delete(`http://localhost:3008/tasks/${id}`, `Bearer ${token}`)
+    deleteTask(id)
+    removeEditState()
   }
   return (
     <li
@@ -47,24 +56,18 @@ const Task = ({
         className="delete-item-icon"
         role="button"
         tabIndex={0}
-        onClick={() => {
-          deleteTask(id)
-          removeEditState()
-        }}
-        onKeyPress={() => {
-          deleteTask(id)
-          removeEditState()
-        }}
+        onClick={() => deleteIconHandler(_id)}
+        onKeyPress={() => deleteIconHandler(_id)}
       >
         &times;
       </span>
       <input
         type="checkbox"
         defaultChecked={completed}
-        id={id}
+        id={_id}
         onClick={checkBoxToggle}
       />
-      <label htmlFor={id} className="checkbox-label" />
+      <label htmlFor={_id} className="checkbox-label" />
     </li>
   )
 }

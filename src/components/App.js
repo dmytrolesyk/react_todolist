@@ -1,44 +1,61 @@
 /** @flow */
 
 import React, { Component } from 'react'
-import Toolbar from './Toolbar'
+// import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
+import LoginForm from './LoginForm'
+import Toolbar from './Toolbar'
 import AddTaskSection from './AddTaskSection/AddTaskSection'
 import ManageTaskSection from './ManageTaskSection'
+
+import http from '../utilities/http'
 
 import type { User, Task, AcceptsTaskReturnsNothing } from '../types'
 
 import './App.css'
 
 type State = {
-  user: User,
+  loggedIn: boolean,
+  user: ?User,
   tasks: Array<Task>,
 }
 
 class App extends Component<any, State> {
   state = {
-    user: {
-      id: '0',
-      username: 'kevin',
-      token: 'tkn123',
-    },
-    tasks: [
-      {
-        id: '0',
-        caption: 'task 1',
-        completed: true,
-      },
-      {
-        id: '1',
-        caption: 'task 2',
-        completed: false,
-      },
-      {
-        id: '2',
-        caption: 'task 3',
-        completed: false,
-      },
-    ],
+    loggedIn: false,
+    user: null,
+    tasks: [],
+  }
+
+  async componentDidMount() {
+    if (localStorage.getItem('user')) {
+      const user = JSON.parse(localStorage.getItem('user'))
+      const tasks = await http.get(`http://localhost:3008/tasks/${user.userId}`, `Bearer ${user.token}`)
+      this.setState({
+        loggedIn: true,
+        user,
+        tasks,
+      })
+    }
+  }
+
+  logOut = () => {
+    localStorage.removeItem('user')
+    this.setState({
+      loggedIn: false,
+      user: null,
+      tasks: [],
+    })
+  }
+
+  uponLogin = async (user: User) => {
+    localStorage.setItem('user', JSON.stringify(user))
+    const tasks = await http.get(`http://localhost:3008/tasks/${user.userId}`, `Bearer ${user.token}`)
+    this.setState({
+      loggedIn: true,
+      user,
+      tasks,
+    })
   }
 
   addNewTask: AcceptsTaskReturnsNothing = (newTask) => {
@@ -55,7 +72,7 @@ class App extends Component<any, State> {
   updateTask: AcceptsTaskReturnsNothing = (updatedTask) => {
     const { tasks } = this.state
     const newTasks = [...tasks]
-    const index = newTasks.findIndex(task => task.id === updatedTask.id)
+    const index = newTasks.findIndex(task => task._id === updatedTask._id)
     newTasks[index] = updatedTask
     this.setState({
       tasks: newTasks,
@@ -64,32 +81,47 @@ class App extends Component<any, State> {
 
   deleteTask = (id: string):void => {
     const { tasks } = this.state
-    const newTasks = tasks.filter(task => task.id !== id)
+    const newTasks = tasks.filter(task => task._id !== id)
+
     this.setState({
       tasks: newTasks,
     })
   }
 
   render() {
-    const { tasks, user } = this.state
+    const { loggedIn, tasks, user } = this.state
     return (
       <div className="wrapper">
         <div className="container">
           <div className="row">
             <div className="column">
               <div className="card">
-                <Toolbar
-                  username={user.username}
-                />
-                <AddTaskSection
-                  addNewTask={this.addNewTask}
-                />
-                <ManageTaskSection
-                  tasks={tasks}
-                  clearTasks={this.clearTasks}
-                  deleteTask={this.deleteTask}
-                  updateTask={this.updateTask}
-                />
+                {!loggedIn
+                  ? (
+                    <LoginForm
+                      uponLogin={this.uponLogin}
+                    />
+                  ) : null}
+                {loggedIn ? (
+                  <React.Fragment>
+                    <Toolbar
+                      username={user.username}
+                      logOut={this.logOut}
+                    />
+                    <AddTaskSection
+                      addNewTask={this.addNewTask}
+                      userId={user.userId}
+                      token={user.token}
+                    />
+                    <ManageTaskSection
+                      tasks={tasks}
+                      token={user.token}
+                      clearTasks={this.clearTasks}
+                      deleteTask={this.deleteTask}
+                      updateTask={this.updateTask}
+                    />
+                  </React.Fragment>
+                ) : null}
               </div>
             </div>
           </div>

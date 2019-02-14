@@ -9,6 +9,7 @@ import './Tasks.css'
 
 type Props = {
   tasks: Array<TaskType>,
+  token: string,
   deleteTask:(id: string) => void,
   setEditState:AcceptsTaskReturnsNothing,
   updateTask: AcceptsTaskReturnsNothing,
@@ -17,6 +18,7 @@ type Props = {
 
 const Tasks = (props: Props) => {
   const {
+    token,
     tasks,
     setEditState,
     deleteTask,
@@ -27,8 +29,9 @@ const Tasks = (props: Props) => {
     <ul className="tasks-component">
       {tasks.map(task => (
         <Task
-          key={task.id}
+          key={task._id}
           task={task}
+          token={token}
           deleteTask={deleteTask}
           setEditState={setEditState}
           updateTask={updateTask}

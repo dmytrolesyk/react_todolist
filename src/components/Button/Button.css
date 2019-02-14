@@ -48,6 +48,12 @@
   background-color: #cc1c36;
 }
 
+.btn-transparent {
+  color: #6a1979;
+  font-size: 16px;
+  background-color: transparent;
+}
+
 .btn-logout {
   position: absolute;
   right: 10px;

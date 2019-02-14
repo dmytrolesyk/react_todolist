@@ -1,16 +1,19 @@
 /** @flow */
 
 import React, { Component } from 'react'
-import uuid from 'uuid'
 import TitleHolder from '../TitleHolder'
 import TextInputHolder from '../TextInputHolder'
 import Button from '../Button'
 
-import type { Task, AcceptsTaskReturnsNothing } from '../../types'
+import http from '../../utilities/http'
+
+import type { AcceptsTaskReturnsNothing } from '../../types'
 
 import './AddTaskSection.css'
 
 type Props = {
+  userId: string,
+  token: string,
   addNewTask: AcceptsTaskReturnsNothing
 }
 
@@ -25,19 +28,15 @@ class AddTaskSection extends Component<Props, State> {
 
   onChange = (e: any):void => this.setState({ [e.target.name]: e.target.value })
 
-  addNewTaskHandler = ():void => {
-    const { addNewTask } = this.props
+  addNewTaskHandler = async ():Promise<any> => {
+    const { addNewTask, userId, token } = this.props
     const { taskInput } = this.state
     if (!taskInput) {
       alert('You need to input some value')
       return
     }
-    const newTask: Task = {
-      id: uuid(),
-      caption: taskInput,
-      completed: false,
-    }
-    addNewTask(newTask)
+    const res = await http.post('http://localhost:3008/tasks/', { caption: taskInput, userId }, `Bearer ${token}`)
+    addNewTask(res)
     this.setState({
       taskInput: '',
     })

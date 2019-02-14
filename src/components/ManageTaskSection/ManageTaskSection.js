@@ -6,6 +6,7 @@ import Button from '../Button'
 import TextInputHolder from '../TextInputHolder'
 import Tasks from './components/Tasks'
 
+import http from '../../utilities/http'
 import type { Task, AcceptsTaskReturnsNothing } from '../../types'
 
 import './ManageTaskSection.css'
@@ -13,9 +14,10 @@ import './ManageTaskSection.css'
 
 type Props = {
   tasks: Array<Task>,
+  token: string,
   clearTasks: () => void,
   deleteTask: (id: string) => void,
-  updateTask: (updatedTask: Task) => void
+  updateTask: AcceptsTaskReturnsNothing
 }
 
 type State = {
@@ -71,22 +73,28 @@ class ManageTaskSection extends Component<Props, State> {
     })
   }
 
-  updateTaskBtnClick = ():void => {
-    const { updateTask } = this.props
+  updateTaskBtnClick = async ():Promise<any> => {
+    const { updateTask, token } = this.props
     const { updateInput, currentTask } = this.state
+    if (!updateInput) {
+      alert('You need to input some value')
+      return
+    }
     if (currentTask) {
-      const updatedTask = {
-        id: currentTask.id,
+      const taskToUpdate: Task = {
+        _id: currentTask._id,
         caption: updateInput,
         completed: currentTask.completed,
       }
+      const updatedTask = await http.put('http://localhost:3008/tasks/', taskToUpdate, `Bearer ${token}`)
       updateTask(updatedTask)
       this.removeEditState()
     }
   }
 
   clearTasksBtnClick = ():void => {
-    const { clearTasks } = this.props
+    const { clearTasks, token } = this.props
+    http.delete('http://localhost:3008/remove-all-tasks', `Bearer ${token}`)
     clearTasks()
   }
 
@@ -96,7 +104,9 @@ class ManageTaskSection extends Component<Props, State> {
       updateInput,
       editState,
     } = this.state
-    const { deleteTask, updateTask, tasks } = this.props
+    const {
+      deleteTask, updateTask, tasks, token,
+    } = this.props
     const tasksToDisplay: Array<Task> = editState ? tasks : this.filterTasks()
     return (
       <div className="manage-tasks-section">
@@ -117,11 +127,13 @@ class ManageTaskSection extends Component<Props, State> {
             value={updateInput}
             placeholder="Update Task"
             onChange={this.onChangeUpdateInput}
+            onKeyPress={this.updateTaskBtnClick}
           />
         ) : null}
         {tasksToDisplay.length ? (
           <Tasks
             tasks={tasksToDisplay}
+            token={token}
             deleteTask={deleteTask}
             setEditState={this.setEditState}
             updateTask={updateTask}
