@@ -16,20 +16,20 @@ import './App.css'
 
 type State = {
   loggedIn: boolean,
-  user: ?User,
+  user: User | {},
   tasks: Array<Task>,
 }
 
 class App extends Component<any, State> {
   state = {
     loggedIn: false,
-    user: null,
+    user: {},
     tasks: [],
   }
 
   async componentDidMount() {
     if (localStorage.getItem('user')) {
-      const user = JSON.parse(localStorage.getItem('user'))
+      const user = JSON.parse(localStorage.getItem('user') || '{}')
       const tasks = await http.get(`http://localhost:3008/tasks/${user.userId}`, `Bearer ${user.token}`)
       this.setState({
         loggedIn: true,
@@ -43,7 +43,7 @@ class App extends Component<any, State> {
     localStorage.removeItem('user')
     this.setState({
       loggedIn: false,
-      user: null,
+      user: {},
       tasks: [],
     })
   }
@@ -79,7 +79,7 @@ class App extends Component<any, State> {
     })
   }
 
-  deleteTask = (id: string):void => {
+  deleteTask = (id: string): void => {
     const { tasks } = this.state
     const newTasks = tasks.filter(task => task._id !== id)
 
