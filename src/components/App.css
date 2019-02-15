@@ -5,6 +5,7 @@
 body {
   min-width: 320px;
   font-family: 'Roboto', sans-serif;
+  background: linear-gradient(260deg, #2376ae, #c16ecf);
   margin: 0;
 }
 
@@ -12,7 +13,6 @@ body {
   position: relative;
   width: 100%;
   overflow: hidden;
-  background: linear-gradient(260deg, #2376ae, #c16ecf);
   background-size: cover;
   min-height: 100vh;
 }

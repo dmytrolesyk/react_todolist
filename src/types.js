@@ -12,4 +12,10 @@ export type User = {|
   userId: string,
 |}
 
+export type NotificationType = {|
+  id: string,
+  status: string,
+  msg: string,
+|}
+
 export type AcceptsTaskReturnsNothing = (newTask: Task) => void

@@ -1,7 +1,6 @@
 /** @flow */
 
 import React, { Component } from 'react'
-// import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import LoginForm from './LoginForm'
 import Toolbar from './Toolbar'
@@ -35,7 +34,7 @@ class App extends Component<any, State> {
         loggedIn: true,
         user,
         tasks,
-      })
+      }, () => console.log(this.state))
     }
   }
 
@@ -102,20 +101,21 @@ class App extends Component<any, State> {
                       uponLogin={this.uponLogin}
                     />
                   ) : null}
-                {loggedIn ? (
+                {loggedIn && (typeof user.userId === 'string') && (typeof user.username === 'string') && (typeof user.token === 'string') ? (
                   <React.Fragment>
                     <Toolbar
                       username={user.username}
                       logOut={this.logOut}
                     />
                     <AddTaskSection
-                      addNewTask={this.addNewTask}
                       userId={user.userId}
                       token={user.token}
+                      addNewTask={this.addNewTask}
                     />
                     <ManageTaskSection
                       tasks={tasks}
                       token={user.token}
+                      userId={user.userId}
                       clearTasks={this.clearTasks}
                       deleteTask={this.deleteTask}
                       updateTask={this.updateTask}

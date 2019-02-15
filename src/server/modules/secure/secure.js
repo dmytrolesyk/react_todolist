@@ -52,7 +52,8 @@ const updateTask = async (ctx) => {
 }
 
 const deleteAllTasks = async (ctx) => {
-  await TaskModel.deleteMany({})
+  const { userId } = ctx.params
+  await TaskModel.remove({ author: userId })
   ctx.body = []
 }
 
@@ -66,6 +67,6 @@ secureRoutes.delete('/tasks/:id', deleteTask)
 
 secureRoutes.put('/tasks', updateTask)
 
-secureRoutes.delete('/remove-all-tasks', deleteAllTasks)
+secureRoutes.delete('/remove-all-tasks/:userId', deleteAllTasks)
 
 module.exports = secureRoutes

@@ -6,6 +6,9 @@ import TextInputHolder from '../TextInputHolder'
 import Button from '../Button'
 import http from '../../utilities/http'
 
+import NotificationPortal from '../NotificationPortal'
+import Notification from '../NotificationPortal/components/Notification'
+
 import type { User, Task } from '../../types'
 import './LoginForm.css'
 
