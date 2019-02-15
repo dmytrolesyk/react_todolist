@@ -1,15 +1,20 @@
 /** @flow */
 
 import React, { Component } from 'react'
+import uuid from 'uuid'
 
 import LoginForm from './LoginForm'
 import Toolbar from './Toolbar'
 import AddTaskSection from './AddTaskSection/AddTaskSection'
 import ManageTaskSection from './ManageTaskSection'
 
+import NotificationPortal from './NotificationPortal'
+
 import http from '../utilities/http'
 
-import type { User, Task, AcceptsTaskReturnsNothing } from '../types'
+import type {
+  NotificationType, User, Task, AcceptsTaskReturnsNothing,
+} from '../types'
 
 import './App.css'
 
@@ -17,6 +22,7 @@ type State = {
   loggedIn: boolean,
   user: User | {},
   tasks: Array<Task>,
+  notifications: Array<NotificationType>
 }
 
 class App extends Component<any, State> {
@@ -24,6 +30,7 @@ class App extends Component<any, State> {
     loggedIn: false,
     user: {},
     tasks: [],
+    notifications: [],
   }
 
   async componentDidMount() {
@@ -34,7 +41,7 @@ class App extends Component<any, State> {
         loggedIn: true,
         user,
         tasks,
-      }, () => console.log(this.state))
+      })
     }
   }
 
@@ -87,8 +94,34 @@ class App extends Component<any, State> {
     })
   }
 
+  removeNotification = (id:string) => {
+    const { notifications } = this.state
+    const newNotifications = notifications.filter(notification => notification.id !== id)
+    this.setState({
+      notifications: newNotifications,
+    })
+  }
+
+  addNotification = (status:string, msg:string) => {
+    const notification: NotificationType = {
+      id: uuid(),
+      status,
+      msg,
+    }
+    this.setState(prevState => ({
+      notifications: [
+        ...prevState.notifications,
+        notification,
+      ],
+    }))
+
+    setTimeout(() => this.removeNotification(notification.id), 5000)
+  }
+
   render() {
-    const { loggedIn, tasks, user } = this.state
+    const {
+      loggedIn, tasks, user, notifications,
+    } = this.state
     return (
       <div className="wrapper">
         <div className="container">
@@ -99,10 +132,11 @@ class App extends Component<any, State> {
                   ? (
                     <LoginForm
                       uponLogin={this.uponLogin}
+                      addNotification={this.addNotification}
                     />
                   ) : null}
                 {loggedIn && (typeof user.userId === 'string') && (typeof user.username === 'string') && (typeof user.token === 'string') ? (
-                  <React.Fragment>
+                  <>
                     <Toolbar
                       username={user.username}
                       logOut={this.logOut}
@@ -111,6 +145,7 @@ class App extends Component<any, State> {
                       userId={user.userId}
                       token={user.token}
                       addNewTask={this.addNewTask}
+                      addNotification={this.addNotification}
                     />
                     <ManageTaskSection
                       tasks={tasks}
@@ -119,9 +154,11 @@ class App extends Component<any, State> {
                       clearTasks={this.clearTasks}
                       deleteTask={this.deleteTask}
                       updateTask={this.updateTask}
+                      addNotification={this.addNotification}
                     />
-                  </React.Fragment>
+                  </>
                 ) : null}
+                <NotificationPortal notifications={notifications} />
               </div>
             </div>
           </div>

@@ -1,16 +1,14 @@
 /** @flow */
 
 import React, { Component } from 'react'
-import uuid from 'uuid'
+
 import TitleHolder from '../TitleHolder'
 import Button from '../Button'
 import TextInputHolder from '../TextInputHolder'
 import Tasks from './components/Tasks'
-import NotificationPortal from '../NotificationPortal'
-import Notification from '../NotificationPortal/components/Notification'
 
 import http from '../../utilities/http'
-import type { Task, NotificationType, AcceptsTaskReturnsNothing } from '../../types'
+import type { Task, AcceptsTaskReturnsNothing } from '../../types'
 
 import './ManageTaskSection.css'
 
@@ -21,7 +19,8 @@ type Props = {
   userId: string,
   clearTasks: () => void,
   deleteTask: (id: string) => void,
-  updateTask: AcceptsTaskReturnsNothing
+  updateTask: AcceptsTaskReturnsNothing,
+  addNotification: (status: string, msg: string) => void,
 }
 
 type State = {
@@ -29,7 +28,6 @@ type State = {
   currentTask: ?Task,
   filterInput: string,
   updateInput: string,
-  notifications: Array<{id: string, status: string, msg: string}>,
 }
 
 class ManageTaskSection extends Component<Props, State> {
@@ -41,7 +39,6 @@ class ManageTaskSection extends Component<Props, State> {
       currentTask: null,
       filterInput: '',
       updateInput: '',
-      notifications: [],
     }
   }
 
@@ -58,14 +55,6 @@ class ManageTaskSection extends Component<Props, State> {
       editState: false,
       currentTask: null,
       updateInput: '',
-    })
-  }
-
-  removeNotification = (id:string) => {
-    const { notifications } = this.state
-    const newNotifications = notifications.filter(notification => notification.id !== id)
-    this.setState({
-      notifications: newNotifications,
     })
   }
 
@@ -88,20 +77,10 @@ class ManageTaskSection extends Component<Props, State> {
   }
 
   updateTaskBtnClick = async ():Promise<any> => {
-    const { updateTask, token } = this.props
+    const { updateTask, token, addNotification } = this.props
     const { updateInput, currentTask } = this.state
     if (!updateInput) {
-      const notification: NotificationType = {
-        id: uuid(),
-        status: 'failure',
-        msg: 'You need to input updated value',
-      }
-      this.setState(prevState => ({
-        notifications: [
-          ...prevState.notifications,
-          notification,
-        ],
-      }))
+      addNotification('failure', 'You need to input some updated value')
       return
     }
     if (currentTask) {
@@ -127,7 +106,6 @@ class ManageTaskSection extends Component<Props, State> {
       filterInput,
       updateInput,
       editState,
-      notifications,
     } = this.state
     const {
       deleteTask, updateTask, tasks, token,
@@ -192,20 +170,6 @@ class ManageTaskSection extends Component<Props, State> {
             onClick={this.removeEditState}
           />
         ) : null}
-        {
-          notifications.map(notification => (
-            <NotificationPortal
-              key={notification.id}
-              removeNotification={this.removeNotification}
-              notificationId={notification.id}
-            >
-              <Notification
-                msg={notification.msg}
-                status={notification.status}
-              />
-            </NotificationPortal>
-          ))
-        }
       </div>
     )
   }

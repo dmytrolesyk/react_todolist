@@ -6,14 +6,12 @@ import TextInputHolder from '../TextInputHolder'
 import Button from '../Button'
 import http from '../../utilities/http'
 
-import NotificationPortal from '../NotificationPortal'
-import Notification from '../NotificationPortal/components/Notification'
-
 import type { User, Task } from '../../types'
 import './LoginForm.css'
 
 type Props = {
-  uponLogin: (user: User) => Promise<Array<Task>>
+  uponLogin: (user: User) => Promise<Array<Task>>,
+  addNotification: (status: string, msg: string) => void,
 }
 
 type State = {
@@ -35,10 +33,10 @@ class LoginForm extends Component<Props, State> {
   onChange = (e: any):void => this.setState({ [e.target.name]: e.target.value })
 
   register = async ():Promise<any> => {
-    const { uponLogin } = this.props
+    const { uponLogin, addNotification } = this.props
     const { usernameInput, passwordInput, confirmPasswordInput } = this.state
     if (!usernameInput || !passwordInput) {
-      alert('Input username and password')
+      addNotification('failure', 'Input username and password')
       this.setState({
         usernameInput: '',
         passwordInput: '',
@@ -47,7 +45,7 @@ class LoginForm extends Component<Props, State> {
       return
     }
     if (passwordInput !== confirmPasswordInput) {
-      alert('Password does not match!')
+      addNotification('failure', 'Password does not match!')
       this.setState({
         usernameInput: '',
         passwordInput: '',
@@ -58,17 +56,17 @@ class LoginForm extends Component<Props, State> {
 
     const res = await http.post('http://localhost:3008/register', { username: usernameInput, password: passwordInput })
     if (!res.success) {
-      alert('Username exists')
+      addNotification('failure', 'Username exists')
     } else {
       uponLogin(res.data)
     }
   }
 
   login = async ():Promise<any> => {
-    const { uponLogin } = this.props
+    const { uponLogin, addNotification } = this.props
     const { usernameInput, passwordInput } = this.state
     if (!usernameInput || !passwordInput) {
-      alert('Input username and password')
+      addNotification('failure', 'Input username and password')
       this.setState({
         usernameInput: '',
         passwordInput: '',
@@ -77,7 +75,7 @@ class LoginForm extends Component<Props, State> {
     }
     const res = await http.post('http://localhost:3008/login', { username: usernameInput, password: passwordInput })
     if (!res.success) {
-      alert('Username or password is incorrect')
+      addNotification('failure', 'Username or password is incorrect')
       this.setState({
         usernameInput: '',
         passwordInput: '',

@@ -1,44 +1,34 @@
 /** @flow */
 
-import { Component } from 'react'
+import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 
-const portalElement = document.getElementById('portal')
+import Notification from './components/Notification'
 
+import type { NotificationType } from '../../types'
 
 type Props = {
-  removeNotification: (id: string) => void,
-  notificationId: string,
-  children: any
+  notifications: Array<NotificationType>
 }
 
+const portal = document.getElementById('portal')
+
 class NotificationPortal extends Component<Props, *> {
-  constructor(props: Props) {
-    super(props)
-    this.el = document.createElement('div')
-  }
-
-  componentDidMount = () => {
-    if (portalElement) {
-      const { removeNotification, notificationId } = this.props
-      if (portalElement.children.length) {
-        portalElement.insertBefore(this.el, portalElement.firstElementChild)
-      } else {
-        portalElement.appendChild(this.el)
-      }
-      setTimeout(() => {
-        removeNotification(notificationId)
-      }, 5000)
-    }
-  }
-
-  el: HTMLDivElement
-
   render() {
-    const { children } = this.props
+    const { notifications } = this.props
     return ReactDOM.createPortal(
-      children,
-      this.el,
+      <>
+        {
+          [...notifications].reverse().map(n => (
+            <Notification
+              key={n.id}
+              status={n.status}
+              msg={n.msg}
+            />
+          ))
+        }
+      </>,
+      portal,
     )
   }
 }
