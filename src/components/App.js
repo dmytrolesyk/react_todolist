@@ -75,11 +75,15 @@ class App extends Component<any, State> {
 
   clearTasks = () => this.setState({ tasks: [] })
 
+
   updateTask: AcceptsTaskReturnsNothing = (updatedTask) => {
     const { tasks } = this.state
-    const newTasks = [...tasks]
-    const index = newTasks.findIndex(task => task._id === updatedTask._id)
-    newTasks[index] = updatedTask
+    const newTasks = tasks.map((task) => {
+      if (task._id !== updatedTask._id) {
+        return task
+      }
+      return updatedTask
+    })
     this.setState({
       tasks: newTasks,
     })
