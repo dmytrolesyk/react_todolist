@@ -1,5 +1,8 @@
 import { LOG_OUT } from '../userActionTypes'
 
-const logoutAction = () => ({ type: LOG_OUT })
+const logoutAction = () => {
+  localStorage.removeItem('user')
+  return { type: LOG_OUT }
+}
 
 export default logoutAction
