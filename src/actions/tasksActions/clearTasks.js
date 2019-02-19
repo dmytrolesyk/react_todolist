@@ -1,4 +1,4 @@
-import { CLEAR_TASKS } from './tasksActionTypes'
+import { CLEAR_TASKS } from '../tasksActionTypes'
 import http from '../../utilities/http'
 
 const clearTasks = (userId, token) => async (dispatch) => {

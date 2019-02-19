@@ -1,4 +1,4 @@
-import { ADD_TASK } from './tasksActionTypes'
+import { ADD_TASK } from '../tasksActionTypes'
 import http from '../../utilities/http'
 
 const addTask = (caption, user) => async (dispatch) => {

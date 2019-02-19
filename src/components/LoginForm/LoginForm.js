@@ -57,6 +57,11 @@ class LoginForm extends Component<Props, State> {
     const res = await http.post('http://localhost:3008/register', { username: usernameInput, password: passwordInput })
     if (!res.success) {
       addNotification('failure', 'Username exists')
+      this.setState({
+        usernameInput: '',
+        passwordInput: '',
+        confirmPasswordInput: '',
+      })
     } else {
       uponLogin(res.data)
     }

@@ -16,20 +16,23 @@ const portal = document.getElementById('portal')
 class NotificationPortal extends Component<Props, *> {
   render() {
     const { notifications } = this.props
-    return ReactDOM.createPortal(
-      <>
-        {
-          [...notifications].reverse().map(n => (
-            <Notification
-              key={n.id}
-              status={n.status}
-              msg={n.msg}
-            />
-          ))
-        }
-      </>,
-      portal,
-    )
+    if (portal) {
+      return ReactDOM.createPortal(
+        <>
+          {
+            [...notifications].reverse().map(n => (
+              <Notification
+                key={n.id}
+                status={n.status}
+                msg={n.msg}
+              />
+            ))
+          }
+        </>,
+        portal,
+      )
+    }
+    return null
   }
 }
 

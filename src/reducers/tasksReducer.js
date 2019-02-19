@@ -4,7 +4,7 @@ import {
   DELETE_TASK,
   UPDATE_TASK,
   CLEAR_TASKS,
-} from '../actions/tasksActions/tasksActionTypes'
+} from '../actions/tasksActionTypes'
 
 export default function (state = [], action) {
   switch (action.type) {

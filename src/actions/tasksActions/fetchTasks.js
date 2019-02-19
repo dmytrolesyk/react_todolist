@@ -1,4 +1,4 @@
-import { FETCH_TASKS } from './tasksActionTypes'
+import { FETCH_TASKS } from '../tasksActionTypes'
 import http from '../../utilities/http'
 
 const fetchTasks = user => async (dispatch) => {

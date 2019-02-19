@@ -1,4 +1,4 @@
-import { UPDATE_TASK } from './tasksActionTypes'
+import { UPDATE_TASK } from '../tasksActionTypes'
 import http from '../../utilities/http'
 
 const updateTask = (taskToUpdate, token) => async (dispatch) => {

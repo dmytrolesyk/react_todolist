@@ -3,6 +3,8 @@
 import React, { Component } from 'react'
 import uuid from 'uuid'
 
+import store from '../store'
+
 import LoginForm from './LoginForm'
 import Toolbar from './Toolbar'
 import AddTaskSection from './AddTaskSection/AddTaskSection'
@@ -19,16 +21,14 @@ import type {
 import './App.css'
 
 type State = {
-  loggedIn: boolean,
-  user: User | {},
+  user: ?User,
   tasks: Array<Task>,
   notifications: Array<NotificationType>
 }
 
 class App extends Component<any, State> {
   state = {
-    loggedIn: false,
-    user: {},
+    user: null,
     tasks: [],
     notifications: [],
   }
@@ -38,7 +38,6 @@ class App extends Component<any, State> {
       const user = JSON.parse(localStorage.getItem('user') || '{}')
       const tasks = await http.get(`http://localhost:3008/tasks/${user.userId}`, `Bearer ${user.token}`)
       this.setState({
-        loggedIn: true,
         user,
         tasks,
       })
@@ -48,8 +47,7 @@ class App extends Component<any, State> {
   logOut = () => {
     localStorage.removeItem('user')
     this.setState({
-      loggedIn: false,
-      user: {},
+      user: null,
       tasks: [],
     })
   }
@@ -58,7 +56,6 @@ class App extends Component<any, State> {
     localStorage.setItem('user', JSON.stringify(user))
     const tasks = await http.get(`http://localhost:3008/tasks/${user.userId}`, `Bearer ${user.token}`)
     this.setState({
-      loggedIn: true,
       user,
       tasks,
     })
@@ -123,8 +120,9 @@ class App extends Component<any, State> {
   }
 
   render() {
+    console.log(store.getState())
     const {
-      loggedIn, tasks, user, notifications,
+      tasks, user, notifications,
     } = this.state
     return (
       <div className="wrapper">
@@ -132,14 +130,14 @@ class App extends Component<any, State> {
           <div className="row">
             <div className="column">
               <div className="card">
-                {!loggedIn
+                {!user
                   ? (
                     <LoginForm
                       uponLogin={this.uponLogin}
                       addNotification={this.addNotification}
                     />
                   ) : null}
-                {loggedIn && (typeof user.userId === 'string') && (typeof user.username === 'string') && (typeof user.token === 'string') ? (
+                {user ? (
                   <>
                     <Toolbar
                       username={user.username}

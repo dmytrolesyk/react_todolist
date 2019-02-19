@@ -1,4 +1,4 @@
-import { DELETE_TASK } from './tasksActionTypes'
+import { DELETE_TASK } from '../tasksActionTypes'
 import http from '../../utilities/http'
 
 const deleteTask = (taskId, token) => async (dispatch) => {
