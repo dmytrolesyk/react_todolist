@@ -1,18 +1,14 @@
 /** @flow */
 
 import React, { Component } from 'react'
-import uuid from 'uuid'
 
-import store from '../store'
+import { connect } from 'react-redux'
 
 import LoginForm from './LoginForm'
 import Toolbar from './Toolbar'
 import AddTaskSection from './AddTaskSection/AddTaskSection'
 import ManageTaskSection from './ManageTaskSection'
-
 import NotificationPortal from './NotificationPortal'
-
-import http from '../utilities/http'
 
 import type {
   NotificationType, User, Task, AcceptsTaskReturnsNothing,
@@ -21,44 +17,19 @@ import type {
 import './App.css'
 
 type State = {
-  user: ?User,
   tasks: Array<Task>,
-  notifications: Array<NotificationType>
 }
 
 class App extends Component<any, State> {
   state = {
-    user: null,
     tasks: [],
-    notifications: [],
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    const { dispatch } = this.props
     if (localStorage.getItem('user')) {
-      const user = JSON.parse(localStorage.getItem('user') || '{}')
-      const tasks = await http.get(`http://localhost:3008/tasks/${user.userId}`, `Bearer ${user.token}`)
-      this.setState({
-        user,
-        tasks,
-      })
+      dispatch({ type: 'LOG_IN', payload: JSON.parse(localStorage.getItem('user')) })
     }
-  }
-
-  logOut = () => {
-    localStorage.removeItem('user')
-    this.setState({
-      user: null,
-      tasks: [],
-    })
-  }
-
-  uponLogin = async (user: User) => {
-    localStorage.setItem('user', JSON.stringify(user))
-    const tasks = await http.get(`http://localhost:3008/tasks/${user.userId}`, `Bearer ${user.token}`)
-    this.setState({
-      user,
-      tasks,
-    })
   }
 
   addNewTask: AcceptsTaskReturnsNothing = (newTask) => {
@@ -95,35 +66,12 @@ class App extends Component<any, State> {
     })
   }
 
-  removeNotification = (id:string) => {
-    const { notifications } = this.state
-    const newNotifications = notifications.filter(notification => notification.id !== id)
-    this.setState({
-      notifications: newNotifications,
-    })
-  }
-
-  addNotification = (status:string, msg:string) => {
-    const notification: NotificationType = {
-      id: uuid(),
-      status,
-      msg,
-    }
-    this.setState(prevState => ({
-      notifications: [
-        ...prevState.notifications,
-        notification,
-      ],
-    }))
-
-    setTimeout(() => this.removeNotification(notification.id), 5000)
-  }
-
   render() {
-    console.log(store.getState())
     const {
-      tasks, user, notifications,
+      tasks,
     } = this.state
+    const { notifications, user } = this.props
+    console.log(user)
     return (
       <div className="wrapper">
         <div className="container">
@@ -132,17 +80,11 @@ class App extends Component<any, State> {
               <div className="card">
                 {!user
                   ? (
-                    <LoginForm
-                      uponLogin={this.uponLogin}
-                      addNotification={this.addNotification}
-                    />
+                    <LoginForm />
                   ) : null}
                 {user ? (
                   <>
-                    <Toolbar
-                      username={user.username}
-                      logOut={this.logOut}
-                    />
+                    <Toolbar />
                     <AddTaskSection
                       userId={user.userId}
                       token={user.token}
@@ -170,4 +112,9 @@ class App extends Component<any, State> {
   }
 }
 
-export default App
+const mapStateToProps = state => ({
+  user: state.user,
+  notifications: state.notifications,
+})
+
+export default connect(mapStateToProps, null)(App)

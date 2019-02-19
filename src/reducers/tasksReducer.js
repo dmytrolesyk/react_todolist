@@ -6,6 +6,8 @@ import {
   CLEAR_TASKS,
 } from '../actions/tasksActionTypes'
 
+import { LOG_OUT } from '../actions/userActionTypes'
+
 export default function (state = [], action) {
   switch (action.type) {
     case FETCH_TASKS:
@@ -31,6 +33,7 @@ export default function (state = [], action) {
       })
 
     case CLEAR_TASKS:
+    case LOG_OUT:
       return []
 
     default:

@@ -1,18 +1,16 @@
 /** @flow */
 
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import loginAction from '../../actions/userActions/login'
+import registerAction from '../../actions/userActions/register'
+import addNotification from '../../actions/notificationsActions/addNotification'
+
 import TitleHolder from '../TitleHolder'
 import TextInputHolder from '../TextInputHolder'
 import Button from '../Button'
-import http from '../../utilities/http'
 
-import type { User, Task } from '../../types'
 import './LoginForm.css'
-
-type Props = {
-  uponLogin: (user: User) => Promise<Array<Task>>,
-  addNotification: (status: string, msg: string) => void,
-}
 
 type State = {
   singUpState: boolean,
@@ -22,7 +20,7 @@ type State = {
 }
 
 
-class LoginForm extends Component<Props, State> {
+class LoginForm extends Component<*, State> {
   state = {
     singUpState: false,
     usernameInput: '',
@@ -32,64 +30,6 @@ class LoginForm extends Component<Props, State> {
 
   onChange = (e: any):void => this.setState({ [e.target.name]: e.target.value })
 
-  register = async ():Promise<any> => {
-    const { uponLogin, addNotification } = this.props
-    const { usernameInput, passwordInput, confirmPasswordInput } = this.state
-    if (!usernameInput || !passwordInput) {
-      addNotification('failure', 'Input username and password')
-      this.setState({
-        usernameInput: '',
-        passwordInput: '',
-        confirmPasswordInput: '',
-      })
-      return
-    }
-    if (passwordInput !== confirmPasswordInput) {
-      addNotification('failure', 'Password does not match!')
-      this.setState({
-        usernameInput: '',
-        passwordInput: '',
-        confirmPasswordInput: '',
-      })
-      return
-    }
-
-    const res = await http.post('http://localhost:3008/register', { username: usernameInput, password: passwordInput })
-    if (!res.success) {
-      addNotification('failure', 'Username exists')
-      this.setState({
-        usernameInput: '',
-        passwordInput: '',
-        confirmPasswordInput: '',
-      })
-    } else {
-      uponLogin(res.data)
-    }
-  }
-
-  login = async ():Promise<any> => {
-    const { uponLogin, addNotification } = this.props
-    const { usernameInput, passwordInput } = this.state
-    if (!usernameInput || !passwordInput) {
-      addNotification('failure', 'Input username and password')
-      this.setState({
-        usernameInput: '',
-        passwordInput: '',
-      })
-      return
-    }
-    const res = await http.post('http://localhost:3008/login', { username: usernameInput, password: passwordInput })
-    if (!res.success) {
-      addNotification('failure', 'Username or password is incorrect')
-      this.setState({
-        usernameInput: '',
-        passwordInput: '',
-      })
-    } else {
-      uponLogin(res.data)
-    }
-  }
-
   render() {
     const {
       singUpState,
@@ -97,6 +37,10 @@ class LoginForm extends Component<Props, State> {
       passwordInput,
       confirmPasswordInput,
     } = this.state
+    const {
+      login,
+      register,
+    } = this.props
     return (
       <form className="login-form">
         {!singUpState ? (
@@ -155,7 +99,7 @@ class LoginForm extends Component<Props, State> {
             color="btn-violet"
             size="btn-regular btn-block"
             text="Log in"
-            onClick={this.login}
+            onClick={() => login(usernameInput, passwordInput)}
           />
         ) : null}
         {singUpState ? (
@@ -163,7 +107,7 @@ class LoginForm extends Component<Props, State> {
             color="btn-violet"
             size="btn-regular btn-block"
             text="Sign up"
-            onClick={this.register}
+            onClick={() => register(usernameInput, passwordInput, confirmPasswordInput)}
           />
         ) : null}
       </form>
@@ -171,4 +115,8 @@ class LoginForm extends Component<Props, State> {
   }
 }
 
-export default LoginForm
+export default connect(null, {
+  login: loginAction,
+  register: registerAction,
+  addNotification,
+})(LoginForm)

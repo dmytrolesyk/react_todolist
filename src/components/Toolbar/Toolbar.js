@@ -1,16 +1,19 @@
 /** @flow */
 
 import React from 'react'
+import { connect } from 'react-redux'
+import logoutAction from '../../actions/userActions/logoutAction'
+
 import Button from '../Button'
 import './Toolbar.css'
 
 type Props = {
   username: string,
-  logOut: ()=>void,
+  logout: ()=>void,
 }
 
 const Toolbar = (props: Props) => {
-  const { username, logOut } = props
+  const { username, logout } = props
   const greeting: string = `Hello, ${username}`
   return (
     <div className="toolbar">
@@ -20,10 +23,16 @@ const Toolbar = (props: Props) => {
         size="btn-sm"
         text="Log out"
         optClasses="btn-logout"
-        onClick={() => logOut()}
+        onClick={logout}
       />
     </div>
   )
 }
 
-export default Toolbar
+const mapStateToProps = state => ({
+  username: state.user.username,
+})
+
+export default connect(mapStateToProps, {
+  logout: logoutAction,
+})(Toolbar)
