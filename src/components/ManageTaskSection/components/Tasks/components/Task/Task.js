@@ -1,43 +1,43 @@
 /** @flow */
 
 import React from 'react'
+import { connect } from 'react-redux'
 import classnames from 'classnames'
+import updateTaskAction from '../../../../../../actions/tasksActions/updateTask'
+import deleteTaskAction from '../../../../../../actions/tasksActions/deleteTask'
 
-import type { Task as TaskType, AcceptsTaskReturnsNothing } from '../../../../../../types'
-import http from '../../../../../../utilities/http'
+import type { User, Task as TaskType, AcceptsTaskReturnsNothing } from '../../../../../../types'
 import './css/Task.css'
 
 type Props = {
+  user: User,
   task: TaskType,
-  token: string,
-  deleteTask: (id: string)=>void,
+  updateTask: (task: TaskType, token: string) => void,
+  deleteTask: (taskId: string, token: string) => void,
   setEditState:AcceptsTaskReturnsNothing,
-  updateTask: AcceptsTaskReturnsNothing,
   removeEditState:() => void,
 }
 
 const Task = ({
+  user,
   task,
-  token,
-  setEditState,
-  deleteTask,
   updateTask,
+  deleteTask,
+  setEditState,
   removeEditState,
 }: Props) => {
   const { _id, caption, completed } = task
-  const checkBoxToggle = async ():Promise<any> => {
+  const checkBoxToggle = ():void => {
     const toggledTask = {
       _id,
       caption,
       completed: !completed,
     }
-    const updatedTask = await http.put('http://localhost:3008/tasks/', toggledTask, `Bearer ${token}`)
-    updateTask(updatedTask)
+    updateTask(toggledTask, user.token)
   }
 
-  const deleteIconHandler = async (id) => {
-    await http.delete(`http://localhost:3008/tasks/${id}`, `Bearer ${token}`)
-    deleteTask(id)
+  const deleteIconHandler = (id) => {
+    deleteTask(id, user.token)
     removeEditState()
   }
   return (
@@ -72,4 +72,11 @@ const Task = ({
   )
 }
 
-export default Task
+const mapStateToProps = state => ({
+  user: state.user,
+})
+
+export default connect(mapStateToProps, {
+  updateTask: updateTaskAction,
+  deleteTask: deleteTaskAction,
+})(Task)

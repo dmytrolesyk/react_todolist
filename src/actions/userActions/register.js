@@ -1,9 +1,13 @@
-import { REGISTER } from '../userActionTypes'
+/** @flow */
+
+import { SET_USER } from '../userActionTypes'
 
 import http from '../../utilities/http'
 import addNotification from '../notificationsActions/addNotification'
 
-const register = (username, password, conirmPassword) => async (dispatch) => {
+import type { DispatchType } from '../../types'
+
+const register = (username:string, password:string, conirmPassword:string) => async (dispatch: DispatchType) => {
   if (!username || !password) {
     dispatch(addNotification('failure', 'Input username and password'))
     return
@@ -14,9 +18,10 @@ const register = (username, password, conirmPassword) => async (dispatch) => {
   }
   const user = await http.post('http://localhost:3008/register', { username, password })
   if (user.success) {
-    localStorage.setItem('user', JSON.stringify((user.data)))
+    user.data.token = `Bearer ${user.data.token}`
+    localStorage.setItem('user', JSON.stringify(user.data))
     dispatch({
-      type: REGISTER,
+      type: SET_USER,
       payload: user.data,
     })
   } else {

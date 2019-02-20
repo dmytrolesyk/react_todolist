@@ -19,3 +19,9 @@ export type NotificationType = {|
 |}
 
 export type AcceptsTaskReturnsNothing = (newTask: Task) => void
+
+export type ActionType = { type: string, payload?: * }
+
+type ThunkAction = (dispatch: DispatchType) => any;
+
+export type DispatchType = (action: ActionType | ThunkAction) => any

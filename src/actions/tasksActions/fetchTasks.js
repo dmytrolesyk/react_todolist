@@ -1,7 +1,11 @@
+/** @flow */
+
 import { FETCH_TASKS } from '../tasksActionTypes'
 import http from '../../utilities/http'
 
-const fetchTasks = user => async (dispatch) => {
+import type { DispatchType, User } from '../../types'
+
+const fetchTasks = (user:User) => async (dispatch: DispatchType) => {
   const tasks = await http.get(`http://localhost:3008/tasks/${user.userId}`, user.token)
   dispatch({
     type: FETCH_TASKS,

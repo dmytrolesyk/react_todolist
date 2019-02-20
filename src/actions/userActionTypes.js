@@ -1,3 +1,4 @@
-export const LOG_IN = 'LOG_IN'
-export const REGISTER = 'REGISTER'
-export const LOG_OUT = 'LOG_OUT'
+/** @flow */
+
+export const SET_USER:string = 'SET_USER'
+export const REMOVE_USER:string = 'REMOVE_USER'

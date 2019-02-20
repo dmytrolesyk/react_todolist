@@ -1,3 +1,5 @@
+/** @flow */
+
 import {
   FETCH_TASKS,
   ADD_TASK,
@@ -6,9 +8,18 @@ import {
   CLEAR_TASKS,
 } from '../actions/tasksActionTypes'
 
-import { LOG_OUT } from '../actions/userActionTypes'
+import { REMOVE_USER } from '../actions/userActionTypes'
 
-export default function (state = [], action) {
+import type { Task as TaskType } from '../types'
+
+type State = Array<TaskType>
+
+type Action = {
+  type: string,
+  payload: TaskType
+}
+
+export default function (state:State = [], action:Action):State {
   switch (action.type) {
     case FETCH_TASKS:
       return [
@@ -33,7 +44,7 @@ export default function (state = [], action) {
       })
 
     case CLEAR_TASKS:
-    case LOG_OUT:
+    case REMOVE_USER:
       return []
 
     default:

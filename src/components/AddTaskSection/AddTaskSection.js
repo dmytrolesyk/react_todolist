@@ -2,21 +2,22 @@
 
 import React, { Component } from 'react'
 
+import { connect } from 'react-redux'
+import addNotificationAction from '../../actions/notificationsActions/addNotification'
+import addTaskAction from '../../actions/tasksActions/addTask'
+
 import TitleHolder from '../TitleHolder'
 import TextInputHolder from '../TextInputHolder'
 import Button from '../Button'
 
-import http from '../../utilities/http'
-
-import type { AcceptsTaskReturnsNothing } from '../../types'
+import type { User } from '../../types'
 
 import './AddTaskSection.css'
 
 type Props = {
-  userId: string,
-  token: string,
-  addNewTask: AcceptsTaskReturnsNothing,
-  addNotification: (status: string, msg: string) => void,
+  addTask: (caption: string, user: User) => any,
+  user: User,
+  addNotification: (status: string, msg: string) => any
 }
 
 type State = {
@@ -30,17 +31,17 @@ class AddTaskSection extends Component<Props, State> {
 
   onChange = (e: any):void => this.setState({ [e.target.name]: e.target.value })
 
-  addNewTaskHandler = async ():Promise<any> => {
+  addNewTaskHandler = ():void => {
     const {
-      addNewTask, userId, token, addNotification,
+      addTask, user, addNotification,
     } = this.props
     const { taskInput } = this.state
     if (!taskInput) {
       addNotification('failure', 'You need to input some value')
       return
     }
-    const res = await http.post('http://localhost:3008/tasks/', { caption: taskInput, userId }, `Bearer ${token}`)
-    addNewTask(res)
+    addTask(taskInput, user)
+
     this.setState({
       taskInput: '',
     })
@@ -71,4 +72,11 @@ class AddTaskSection extends Component<Props, State> {
   }
 }
 
-export default AddTaskSection
+const mapStateToProps = state => ({
+  user: state.user,
+})
+
+export default connect(mapStateToProps, {
+  addNotification: addNotificationAction,
+  addTask: addTaskAction,
+})(AddTaskSection)

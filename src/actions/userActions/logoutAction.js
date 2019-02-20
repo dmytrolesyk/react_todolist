@@ -1,8 +1,12 @@
-import { LOG_OUT } from '../userActionTypes'
+/** @flow */
 
-const logoutAction = () => {
+import { REMOVE_USER } from '../userActionTypes'
+
+import type { DispatchType } from '../../types'
+
+const logoutAction = () => (dispatch: DispatchType) => {
   localStorage.removeItem('user')
-  return { type: LOG_OUT }
+  dispatch({ type: REMOVE_USER })
 }
 
 export default logoutAction

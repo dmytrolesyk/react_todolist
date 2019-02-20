@@ -1,9 +1,14 @@
+/** @flow */
+
+
 import uuid from 'uuid'
 import removeNotification from './removeNotification'
 import { ADD_NOTIFICATION } from '../notificationsActionTypes'
 
-const addNotification = (status, msg) => (dispatch) => {
-  const notification = {
+import type { DispatchType } from '../../types'
+
+const addNotification = (status:string, msg:string) => (dispatch: DispatchType) => {
+  const notification: {id: string, status: string, msg: string} = {
     id: uuid(),
     status,
     msg,

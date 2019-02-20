@@ -1,9 +1,14 @@
+/** @flow */
+
+
 import {
   ADD_NOTIFICATION,
   REMOVE_NOTIFICATION,
 } from '../actions/notificationsActionTypes'
 
-export default function (state = [], action) {
+import type { NotificationType, ActionType } from '../types'
+
+export default function (state:Array<NotificationType> = [], action:ActionType):Array<NotificationType> {
   switch (action.type) {
     case ADD_NOTIFICATION:
       return [

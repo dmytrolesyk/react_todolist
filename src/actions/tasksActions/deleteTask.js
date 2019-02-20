@@ -1,7 +1,11 @@
+/** @flow */
+
 import { DELETE_TASK } from '../tasksActionTypes'
 import http from '../../utilities/http'
 
-const deleteTask = (taskId, token) => async (dispatch) => {
+import type { DispatchType } from '../../types'
+
+const deleteTask = (taskId:string, token:string) => async (dispatch: DispatchType) => {
   const deletedTask = await http.delete(`http://localhost:3008/tasks/${taskId}`, token)
   dispatch({
     type: DELETE_TASK,

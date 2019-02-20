@@ -1,15 +1,18 @@
+/** @flow */
+
 import {
-  LOG_IN,
-  REGISTER,
-  LOG_OUT,
+  SET_USER,
+  REMOVE_USER,
 } from '../actions/userActionTypes'
 
-export default function (state = null, action) {
+import type { User, ActionType } from '../types'
+
+
+export default function (state:?User = null, action:ActionType):?User {
   switch (action.type) {
-    case LOG_IN:
-    case REGISTER:
+    case SET_USER:
       return action.payload
-    case LOG_OUT:
+    case REMOVE_USER:
       return null
     default:
       return state

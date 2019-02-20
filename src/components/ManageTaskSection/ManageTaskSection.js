@@ -2,24 +2,30 @@
 
 import React, { Component } from 'react'
 
+import { connect } from 'react-redux'
+
+import addNotificationAction from '../../actions/notificationsActions/addNotification'
+import updateTaskAction from '../../actions/tasksActions/updateTask'
+import fetchTasksAction from '../../actions/tasksActions/fetchTasks'
+import clearTasksAction from '../../actions/tasksActions/clearTasks'
+
+
 import TitleHolder from '../TitleHolder'
 import Button from '../Button'
 import TextInputHolder from '../TextInputHolder'
 import Tasks from './components/Tasks'
 
-import http from '../../utilities/http'
-import type { Task, AcceptsTaskReturnsNothing } from '../../types'
+import type { Task, User, AcceptsTaskReturnsNothing } from '../../types'
 
 import './ManageTaskSection.css'
 
 
 type Props = {
   tasks: Array<Task>,
-  token: string,
-  userId: string,
-  clearTasks: () => void,
-  deleteTask: (id: string) => void,
-  updateTask: AcceptsTaskReturnsNothing,
+  user: User,
+  fetchTasks: (user: User)=>void,
+  clearTasks: (user: User) => void,
+  updateTask: (task: Task, token: string) => void,
   addNotification: (status: string, msg: string) => void,
 }
 
@@ -40,6 +46,11 @@ class ManageTaskSection extends Component<Props, State> {
       filterInput: '',
       updateInput: '',
     }
+  }
+
+  componentDidMount() {
+    const { fetchTasks, user } = this.props
+    fetchTasks(user)
   }
 
   setEditState: AcceptsTaskReturnsNothing = (task) => {
@@ -76,8 +87,8 @@ class ManageTaskSection extends Component<Props, State> {
     })
   }
 
-  updateTaskBtnClick = async ():Promise<any> => {
-    const { updateTask, token, addNotification } = this.props
+  updateTaskBtnClick = ():void => {
+    const { updateTask, user, addNotification } = this.props
     const { updateInput, currentTask } = this.state
     if (!updateInput) {
       addNotification('failure', 'You need to input some updated value')
@@ -89,16 +100,9 @@ class ManageTaskSection extends Component<Props, State> {
         caption: updateInput,
         completed: currentTask.completed,
       }
-      const updatedTask = await http.put('http://localhost:3008/tasks/', taskToUpdate, `Bearer ${token}`)
-      updateTask(updatedTask)
+      updateTask(taskToUpdate, user.token)
       this.removeEditState()
     }
-  }
-
-  clearTasksBtnClick = ():void => {
-    const { clearTasks, token, userId } = this.props
-    http.delete(`http://localhost:3008/remove-all-tasks/${userId}`, `Bearer ${token}`)
-    clearTasks()
   }
 
   render() {
@@ -108,7 +112,7 @@ class ManageTaskSection extends Component<Props, State> {
       editState,
     } = this.state
     const {
-      deleteTask, updateTask, tasks, token,
+      tasks, user, clearTasks,
     } = this.props
     const tasksToDisplay: Array<Task> = editState ? tasks : this.filterTasks()
     return (
@@ -136,10 +140,7 @@ class ManageTaskSection extends Component<Props, State> {
         {tasksToDisplay.length ? (
           <Tasks
             tasks={tasksToDisplay}
-            token={token}
-            deleteTask={deleteTask}
             setEditState={this.setEditState}
-            updateTask={updateTask}
             removeEditState={this.removeEditState}
           />
         ) : null}
@@ -149,7 +150,7 @@ class ManageTaskSection extends Component<Props, State> {
             size="btn-regular"
             text="Clear Tasks"
             optClasses="btn-clear-tasks"
-            onClick={this.clearTasksBtnClick}
+            onClick={() => clearTasks(user)}
           />
         ) : null}
         {editState ? (
@@ -175,4 +176,14 @@ class ManageTaskSection extends Component<Props, State> {
   }
 }
 
-export default ManageTaskSection
+const mapStateToProps = state => ({
+  tasks: state.tasks,
+  user: state.user,
+})
+
+export default connect(mapStateToProps, {
+  addNotification: addNotificationAction,
+  updateTask: updateTaskAction,
+  fetchTasks: fetchTasksAction,
+  clearTasks: clearTasksAction,
+})(ManageTaskSection)
