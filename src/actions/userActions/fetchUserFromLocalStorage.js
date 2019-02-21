@@ -1,12 +1,14 @@
 /** @flow */
 
-import { SET_USER } from '../userActionTypes'
+import type { Dispatch, ThunkAction } from '../../types'
 
-import type { DispatchType } from '../../types'
-
-const fetchUserFromLocalStorage = () => (dispatch: DispatchType) => {
-  if (typeof localStorage.getItem('user') === 'string') {
-    dispatch({ type: SET_USER, payload: JSON.parse(localStorage.getItem('user')) })
+const fetchUserFromLocalStorage = ():ThunkAction => (dispatch: Dispatch) => {
+  const userFromLocalStorage:?string = localStorage.getItem('user')
+  if (typeof userFromLocalStorage === 'string') {
+    dispatch({
+      type: 'SET_USER',
+      payload: JSON.parse(userFromLocalStorage),
+    })
   }
 }
 

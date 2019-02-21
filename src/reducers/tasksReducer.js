@@ -1,5 +1,7 @@
 /** @flow */
 
+import { handleActions } from 'redux-actions'
+
 import {
   FETCH_TASKS,
   ADD_TASK,
@@ -10,44 +12,32 @@ import {
 
 import { REMOVE_USER } from '../actions/userActionTypes'
 
-import type { Task as TaskType } from '../types'
+import type {
+  TasksState,
+  TasksAction,
+  FetchTasksAction,
+  AddTaskAction,
+  DeleteTaskAction,
+  UpdateTaskAction,
+} from '../types'
 
-type State = Array<TaskType>
-
-type Action = {
-  type: string,
-  payload: TaskType
-}
-
-export default function (state:State = [], action:Action):State {
-  switch (action.type) {
-    case FETCH_TASKS:
-      return [
-        ...action.payload,
-      ]
-
-    case ADD_TASK:
-      return [
-        ...state,
-        action.payload,
-      ]
-
-    case DELETE_TASK:
-      return state.filter(task => task._id !== action.payload)
-
-    case UPDATE_TASK:
-      return state.map((task) => {
-        if (task._id !== action.payload._id) {
-          return task
-        }
-        return action.payload
-      })
-
-    case CLEAR_TASKS:
-    case REMOVE_USER:
-      return []
-
-    default:
-      return state
-  }
-}
+export default handleActions <TasksState, TasksAction>({
+  [FETCH_TASKS]: (
+    state: TasksState,
+    action: FetchTasksAction,
+  ): TasksState => ([...state, ...action.payload]),
+  [ADD_TASK]: (
+    state: TasksState,
+    action: AddTaskAction,
+  ): TasksState => [...state, action.payload],
+  [DELETE_TASK]: (
+    state:TasksState,
+    action: DeleteTaskAction,
+  ): TasksState => state.filter(task => task._id !== action.payload),
+  [UPDATE_TASK]: (
+    state:TasksState,
+    action: UpdateTaskAction,
+  ): TasksState => state.map(task => (task._id !== action.payload._id ? task : action.payload)),
+  [CLEAR_TASKS]: (): TasksState => [],
+  [REMOVE_USER]: (): TasksState => [],
+}, [])

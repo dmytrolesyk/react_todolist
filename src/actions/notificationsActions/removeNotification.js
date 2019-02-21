@@ -1,10 +1,7 @@
 /** @flow */
 
-import { REMOVE_NOTIFICATION } from '../notificationsActionTypes'
+import type { RemoveNotificationAction } from '../../types'
 
-const removeNotification = (id:string) => ({
-  type: REMOVE_NOTIFICATION,
-  payload: id,
-})
+const removeNotification = (id:string):RemoveNotificationAction => ({ type: 'REMOVE_NOTIFICATION', payload: id })
 
 export default removeNotification

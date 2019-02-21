@@ -1,14 +1,13 @@
 /** @flow */
 
-import { UPDATE_TASK } from '../tasksActionTypes'
 import http from '../../utilities/http'
 
-import type { DispatchType, Task } from '../../types'
+import type { Dispatch, Task, ThunkAction } from '../../types'
 
-const updateTask = (taskToUpdate: Task, token:string) => async (dispatch: DispatchType) => {
-  const updatedTask = await http.put('http://localhost:3008/tasks/', taskToUpdate, token)
+const updateTask = (taskToUpdate: Task, token:string):ThunkAction => async (dispatch: Dispatch) => {
+  const updatedTask:Task = await http.put('http://localhost:3008/tasks/', taskToUpdate, token)
   dispatch({
-    type: UPDATE_TASK,
+    type: 'UPDATE_TASK',
     payload: updatedTask,
   })
 }

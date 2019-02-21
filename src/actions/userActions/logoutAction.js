@@ -1,12 +1,10 @@
 /** @flow */
 
-import { REMOVE_USER } from '../userActionTypes'
+import type { Dispatch, ThunkAction } from '../../types'
 
-import type { DispatchType } from '../../types'
-
-const logoutAction = () => (dispatch: DispatchType) => {
+const logoutAction = ():ThunkAction => (dispatch: Dispatch) => {
   localStorage.removeItem('user')
-  dispatch({ type: REMOVE_USER })
+  dispatch({ type: 'REMOVE_USER' })
 }
 
 export default logoutAction

@@ -1,23 +1,23 @@
 /** @flow */
 
-
 import uuid from 'uuid'
 import removeNotification from './removeNotification'
-import { ADD_NOTIFICATION } from '../notificationsActionTypes'
 
-import type { DispatchType } from '../../types'
+import type { Dispatch, NotificationType, ThunkAction } from '../../types'
 
-const addNotification = (status:string, msg:string) => (dispatch: DispatchType) => {
-  const notification: {id: string, status: string, msg: string} = {
+const addNotification = (status:string, msg:string):ThunkAction => (dispatch: Dispatch) => {
+  const notification:NotificationType = {
     id: uuid(),
     status,
     msg,
   }
 
-  dispatch({
-    type: ADD_NOTIFICATION,
-    payload: notification,
-  })
+  if (notification) {
+    dispatch({
+      type: 'ADD_NOTIFICATION',
+      payload: notification,
+    })
+  }
 
   setTimeout(() => {
     dispatch(removeNotification(notification.id))

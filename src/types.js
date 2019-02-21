@@ -20,8 +20,70 @@ export type NotificationType = {|
 
 export type AcceptsTaskReturnsNothing = (newTask: Task) => void
 
-export type ActionType = { type: string, payload?: * }
+export type FetchTasksAction = {|
+  type: 'FETCH_TASKS',
+  payload: Array<Task>,
+|}
 
-type ThunkAction = (dispatch: DispatchType) => any;
+export type AddTaskAction = {|
+  type: 'ADD_TASK',
+  payload: Task,
+|}
 
-export type DispatchType = (action: ActionType | ThunkAction) => any
+export type DeleteTaskAction = {|
+  type: 'DELETE_TASK',
+  payload: string,
+|}
+
+export type UpdateTaskAction = {|
+  type: 'UPDATE_TASK',
+  payload: Task,
+|}
+
+export type ClearTasksAction = {|
+  type: 'CLEAR_TASKS'
+|}
+
+export type SetUserAction = {|
+  type: 'SET_USER',
+  payload: User,
+|}
+
+export type RemoveUserAction = {|
+  type: 'REMOVE_USER'
+|}
+
+export type AddNotificationAction = {|
+  type: 'ADD_NOTIFICATION',
+  payload: NotificationType,
+|}
+
+export type RemoveNotificationAction = {|
+  type: 'REMOVE_NOTIFICATION',
+  payload: string,
+|}
+
+export type UserAction = SetUserAction | RemoveUserAction
+
+export type TasksAction = FetchTasksAction | AddTaskAction
+| DeleteTaskAction | UpdateTaskAction | ClearTasksAction | RemoveUserAction
+
+export type NotificationAction = AddNotificationAction | RemoveNotificationAction
+
+
+export type Action = UserAction | TasksAction | NotificationAction
+
+export type TasksState = Array<Task>
+export type UserState = ?User
+export type NotificationsState = Array<NotificationType>
+
+export type State = {
+  +user: UserState,
+  +tasks: TasksState,
+  +notifications: NotificationsState,
+}
+
+type GetState = () => State
+type PromiseAction = Promise<Action>
+export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any
+export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any

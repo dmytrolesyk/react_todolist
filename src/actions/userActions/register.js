@@ -1,13 +1,13 @@
 /** @flow */
 
-import { SET_USER } from '../userActionTypes'
-
 import http from '../../utilities/http'
 import addNotification from '../notificationsActions/addNotification'
 
-import type { DispatchType } from '../../types'
+import type { Dispatch, ThunkAction } from '../../types'
 
-const register = (username:string, password:string, conirmPassword:string) => async (dispatch: DispatchType) => {
+const register = (
+  username:string, password:string, conirmPassword:string,
+):ThunkAction => async (dispatch: Dispatch) => {
   if (!username || !password) {
     dispatch(addNotification('failure', 'Input username and password'))
     return
@@ -21,7 +21,7 @@ const register = (username:string, password:string, conirmPassword:string) => as
     user.data.token = `Bearer ${user.data.token}`
     localStorage.setItem('user', JSON.stringify(user.data))
     dispatch({
-      type: SET_USER,
+      type: 'SET_USER',
       payload: user.data,
     })
   } else {
