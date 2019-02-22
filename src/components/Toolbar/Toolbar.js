@@ -8,33 +8,29 @@ import Button from '../Button'
 import './Toolbar.css'
 
 type Props = {
-  username: string,
+  user: ?{ username: string },
   logout: ()=>void,
 }
 
 const Toolbar = (props: Props) => {
-  const { username, logout } = props
-  const greeting: string = `Hello, ${username}`
-  return (
-    <div className="toolbar">
-      <div className="greeting">{greeting}</div>
-      <Button
-        color="btn-violet"
-        size="btn-sm"
-        text="Log out"
-        optClasses="btn-logout"
-        onClick={logout}
-      />
-    </div>
-  )
+  const { user, logout } = props
+  if (user) {
+    const greeting = `Hello, ${user.username}`
+    return (
+      <div className="toolbar">
+        <div className="greeting">{greeting}</div>
+        <Button
+          color="btn-violet"
+          size="btn-sm"
+          text="Log out"
+          optClasses="btn-logout"
+          onClick={logout}
+        />
+      </div>
+    )
+  }
+
+  return null
 }
 
-const mapStateToProps = state => ({
-  username: state.user.username,
-})
-
-const mapDispatchToProps = {
-  logout: logoutAction,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Toolbar)
+export default Toolbar

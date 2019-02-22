@@ -1,14 +1,14 @@
 /** @flow */
 
 import React, { Component } from 'react'
-
+import { BrowserRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import LoginForm from './LoginForm'
-import Toolbar from './Toolbar'
-import AddTaskSection from './AddTaskSection/AddTaskSection'
-import ManageTaskSection from './ManageTaskSection'
+import { compose } from 'redux'
+
 import NotificationPortal from './NotificationPortal'
+import GuestRoutes from './GuestRoutes'
+import SecureRoutes from './SecureRoutes'
 
 import fetchUserFromLocalStorageAction from '../actions/userActions/fetchUserFromLocalStorage'
 
@@ -26,31 +26,53 @@ class App extends Component<any, State> {
     fetchUserFromLocalStorage()
   }
 
+  componentDidUpdate(prevProps) {
+    if (!prevProps.user && this.props.user) {
+      this.props.history.push('/')
+    }
+  }
+
+  // render() {
+  //   const { notifications, user } = this.props
+  //   console.log(this.props)
+  //   return (
+  //     <div className="wrapper">
+  //       <div className="container">
+  //         <div className="row">
+  //           <div className="column">
+  //             <div className="card">
+  //               {!user
+  //                 ? (
+  //                   <LoginForm />
+  //                 ) : <MainApp />}
+
+  //               <NotificationPortal notifications={notifications} />
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   )
+  // }
+
   render() {
-    const { notifications, user } = this.props
+    const { user, notifications } = this.props
+    console.log(user)
     return (
-      <div className="wrapper">
-        <div className="container">
-          <div className="row">
-            <div className="column">
-              <div className="card">
-                {!user
-                  ? (
-                    <LoginForm />
-                  ) : null}
-                {user ? (
-                  <>
-                    <Toolbar />
-                    <AddTaskSection />
-                    <ManageTaskSection />
-                  </>
-                ) : null}
-                <NotificationPortal notifications={notifications} />
+      <BrowserRouter>
+        <div className="wrapper">
+          <div className="container">
+            <div className="row">
+              <div className="column">
+                <div className="card">
+                  {user ? <SecureRoutes /> : <GuestRoutes />}
+                  <NotificationPortal notifications={notifications} />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </BrowserRouter>
     )
   }
 }
@@ -60,6 +82,8 @@ const mapStateToProps = state => ({
   notifications: state.notifications,
 })
 
-export default connect(mapStateToProps, {
+const mapDispatchToProps = {
   fetchUserFromLocalStorage: fetchUserFromLocalStorageAction,
-})(App)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
