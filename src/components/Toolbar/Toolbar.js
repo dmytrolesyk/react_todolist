@@ -33,6 +33,8 @@ const mapStateToProps = state => ({
   username: state.user.username,
 })
 
-export default connect(mapStateToProps, {
+const mapDispatchToProps = {
   logout: logoutAction,
-})(Toolbar)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Toolbar)

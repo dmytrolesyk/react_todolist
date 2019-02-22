@@ -76,7 +76,9 @@ const mapStateToProps = state => ({
   user: state.user,
 })
 
-export default connect(mapStateToProps, {
+const mapDispatchToProps = {
   updateTask: updateTaskAction,
   deleteTask: deleteTaskAction,
-})(Task)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Task)

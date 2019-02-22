@@ -115,8 +115,10 @@ class LoginForm extends Component<*, State> {
   }
 }
 
-export default connect(null, {
+const mapDispatchToProps = {
   login: loginAction,
   register: registerAction,
   addNotification,
-})(LoginForm)
+}
+
+export default connect(null, mapDispatchToProps)(LoginForm)
