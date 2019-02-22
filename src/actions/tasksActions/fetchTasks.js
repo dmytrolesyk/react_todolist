@@ -1,6 +1,8 @@
 /** @flow */
 import http from '../../utilities/http'
 
+import config from '../../../config'
+
 import type {
   Dispatch,
   User,
@@ -10,7 +12,7 @@ import type {
 
 
 const fetchTasks = (user:User):ThunkAction => async (dispatch: Dispatch) => {
-  const tasks:Array<Task> = await http.get(`http://localhost:3008/tasks/${user.userId}`, user.token)
+  const tasks:Array<Task> = await http.get(`${config.HOST}:${config.PORT}/tasks/${user.userId}`, user.token)
   dispatch({
     type: 'FETCH_TASKS',
     payload: tasks,

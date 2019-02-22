@@ -3,6 +3,8 @@
 import http from '../../utilities/http'
 import addNotification from '../notificationsActions/addNotification'
 
+import config from '../../../config'
+
 import type { Dispatch, ThunkAction } from '../../types'
 
 
@@ -11,7 +13,7 @@ const login = (username:string, password:string):ThunkAction => async (dispatch:
     dispatch(addNotification('failure', 'Input username and password'))
     return
   }
-  const user = await http.post('http://localhost:3008/login', { username, password })
+  const user = await http.post(`${config.HOST}:${config.PORT}/login`, { username, password })
   if (user.success) {
     user.data.token = `Bearer ${user.data.token}`
     localStorage.setItem('user', JSON.stringify(user.data))

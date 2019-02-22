@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken')
 const UserModel = require('../../db/models/user')
 const authenticate = require('../auth')
 
+const config = require('../../../../config')
+
 const publicRoutes = new Router()
 
 const register = async (ctx) => {
@@ -28,7 +30,7 @@ const register = async (ctx) => {
       username: user.username,
       userId: user._id,
     }
-    const token = jwt.sign(JSON.stringify(signData), 'secret')
+    const token = jwt.sign(JSON.stringify(signData), config.JWT_SECRET)
     ctx.body = {
       success: true,
       data: {
@@ -48,7 +50,7 @@ const login = async (ctx) => {
       username: user.username,
       userId: user._id,
     }
-    const token = jwt.sign(JSON.stringify(signData), 'secret')
+    const token = jwt.sign(JSON.stringify(signData), config.JWT_SECRET)
     ctx.body = {
       success: true,
       data: {

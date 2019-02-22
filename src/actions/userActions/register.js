@@ -3,6 +3,8 @@
 import http from '../../utilities/http'
 import addNotification from '../notificationsActions/addNotification'
 
+import config from '../../../config'
+
 import type { Dispatch, ThunkAction } from '../../types'
 
 const register = (
@@ -16,7 +18,7 @@ const register = (
     dispatch(addNotification('failure', 'Make sure the password matches the confirmation!'))
     return
   }
-  const user = await http.post('http://localhost:3008/register', { username, password })
+  const user = await http.post(`${config.HOST}:${config.PORT}/register`, { username, password })
   if (user.success) {
     user.data.token = `Bearer ${user.data.token}`
     localStorage.setItem('user', JSON.stringify(user.data))

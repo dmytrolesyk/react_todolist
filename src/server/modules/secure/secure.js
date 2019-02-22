@@ -5,9 +5,11 @@ const mongoose = require('mongoose')
 const UserModel = require('../../db/models/user')
 const TaskModel = require('../../db/models/task')
 
+const config = require('../../../../config')
+
 const secureRoutes = new Router()
 
-secureRoutes.use(koajwt({ secret: 'secret' }))
+secureRoutes.use(koajwt({ secret: config.JWT_SECRET }))
 
 const getUserTasks = async (ctx) => {
   const { user } = ctx.params
