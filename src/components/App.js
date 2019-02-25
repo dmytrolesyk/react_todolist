@@ -1,9 +1,8 @@
 /** @flow */
 
 import React, { Component } from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-
 import { compose } from 'redux'
 
 import NotificationPortal from './NotificationPortal'
@@ -27,52 +26,27 @@ class App extends Component<any, State> {
   }
 
   componentDidUpdate(prevProps) {
-    if (!prevProps.user && this.props.user) {
-      this.props.history.push('/')
+    const { user, history } = this.props
+    if (!prevProps.user && user) {
+      history.push('/')
     }
   }
 
-  // render() {
-  //   const { notifications, user } = this.props
-  //   console.log(this.props)
-  //   return (
-  //     <div className="wrapper">
-  //       <div className="container">
-  //         <div className="row">
-  //           <div className="column">
-  //             <div className="card">
-  //               {!user
-  //                 ? (
-  //                   <LoginForm />
-  //                 ) : <MainApp />}
-
-  //               <NotificationPortal notifications={notifications} />
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   )
-  // }
-
   render() {
     const { user, notifications } = this.props
-    console.log(user)
     return (
-      <BrowserRouter>
-        <div className="wrapper">
-          <div className="container">
-            <div className="row">
-              <div className="column">
-                <div className="card">
-                  {user ? <SecureRoutes /> : <GuestRoutes />}
-                  <NotificationPortal notifications={notifications} />
-                </div>
+      <div className="wrapper">
+        <div className="container">
+          <div className="row">
+            <div className="column">
+              <div className="card">
+                {user ? <SecureRoutes /> : <GuestRoutes />}
+                <NotificationPortal notifications={notifications} />
               </div>
             </div>
           </div>
         </div>
-      </BrowserRouter>
+      </div>
     )
   }
 }
@@ -86,4 +60,7 @@ const mapDispatchToProps = {
   fetchUserFromLocalStorage: fetchUserFromLocalStorageAction,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
+)(App)

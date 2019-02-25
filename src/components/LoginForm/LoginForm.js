@@ -40,7 +40,9 @@ class LoginForm extends Component<*, State> {
     const {
       login,
       register,
+      history,
     } = this.props
+
     return (
       <form className="login-form">
         {!singUpState ? (

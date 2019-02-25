@@ -8,7 +8,9 @@ import config from '../../../config'
 import type { Dispatch, ThunkAction } from '../../types'
 
 const register = (
-  username:string, password:string, conirmPassword:string,
+  username:string,
+  password:string,
+  conirmPassword:string,
 ):ThunkAction => async (dispatch: Dispatch) => {
   if (!username || !password) {
     dispatch(addNotification('failure', 'Input username and password'))
