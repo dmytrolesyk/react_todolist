@@ -11,9 +11,19 @@ const secureRoutes = new Router()
 
 secureRoutes.use(koajwt({ secret: config.JWT_SECRET }))
 
+const getUser = async (ctx) => {
+  const { userId } = ctx.params
+  const user = await UserModel.findOne({ _id: userId })
+  ctx.body = user
+}
+
 const getUserTasks = async (ctx) => {
   const { user } = ctx.params
-  ctx.body = await TaskModel.find({ author: user })
+  if (user === ctx.state.user.userId) {
+    ctx.body = await TaskModel.find({ author: user })
+  } else {
+    ctx.body = 'Unauthorized user'
+  }
 }
 
 const getSingleTask = async (ctx) => {
@@ -58,6 +68,8 @@ const deleteAllTasks = async (ctx) => {
   await TaskModel.remove({ author: userId })
   ctx.body = []
 }
+
+secureRoutes.get('/users/:userId', getUser)
 
 secureRoutes.get('/tasks/:user', getUserTasks)
 

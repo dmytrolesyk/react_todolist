@@ -17,6 +17,7 @@ type State = {
   usernameInput: string,
   passwordInput: string,
   confirmPasswordInput: string,
+  publicBoardCheckbox: boolean,
 }
 
 
@@ -26,6 +27,7 @@ class LoginForm extends Component<*, State> {
     usernameInput: '',
     passwordInput: '',
     confirmPasswordInput: '',
+    publicBoardCheckbox: false,
   }
 
   onChange = (e: any):void => this.setState({ [e.target.name]: e.target.value })
@@ -36,11 +38,11 @@ class LoginForm extends Component<*, State> {
       usernameInput,
       passwordInput,
       confirmPasswordInput,
+      publicBoardCheckbox,
     } = this.state
     const {
       login,
       register,
-      history,
     } = this.props
 
     return (
@@ -105,12 +107,22 @@ class LoginForm extends Component<*, State> {
           />
         ) : null}
         {singUpState ? (
-          <Button
-            color="btn-violet"
-            size="btn-regular btn-block"
-            text="Sign up"
-            onClick={() => register(usernameInput, passwordInput, confirmPasswordInput)}
-          />
+          <div style={{ position: 'relative' }}>
+            <span>Check if you would like your board to be publicly accessible</span>
+            <input
+              type="checkbox"
+              defaultChecked={publicBoardCheckbox}
+              id="publicCheckbox"
+              onClick={() => this.setState({ publicBoardCheckbox: !publicBoardCheckbox })}
+            />
+            <label htmlFor="publicCheckbox" className="checkbox-label checkbox-label-registration" />
+            <Button
+              color="btn-violet"
+              size="btn-regular btn-block"
+              text="Sign up"
+              onClick={() => register(usernameInput, passwordInput, confirmPasswordInput, publicBoardCheckbox)}
+            />
+          </div>
         ) : null}
       </form>
     )

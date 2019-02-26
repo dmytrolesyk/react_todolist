@@ -1,8 +1,6 @@
 /** @flow */
 
 import React from 'react'
-import { connect } from 'react-redux'
-import logoutAction from '../../actions/userActions/logoutAction'
 
 import Button from '../Button'
 import './Toolbar.css'
@@ -13,12 +11,15 @@ type Props = {
 }
 
 const Toolbar = (props: Props) => {
-  const { user, logout } = props
+  const { user, logout, currentBoard } = props
+  console.log(currentBoard)
   if (user) {
-    const greeting = `Hello, ${user.username}`
+    const greeting = `hello, ${user.username}`
+    const board = `${user.username}'s board`
     return (
       <div className="toolbar">
         <div className="greeting">{greeting}</div>
+        <div className="board">{board}</div>
         <Button
           color="btn-violet"
           size="btn-sm"

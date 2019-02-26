@@ -67,7 +67,7 @@ const Task = ({
         id={_id}
         onClick={checkBoxToggle}
       />
-      <label htmlFor={_id} className="checkbox-label" />
+      <label htmlFor={_id} className="checkbox-label checkbox-label-task" />
     </li>
   )
 }

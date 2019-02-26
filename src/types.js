@@ -18,6 +18,11 @@ export type NotificationType = {|
   msg: string,
 |}
 
+export type Board = {|
+  id: string,
+  name: string,
+|}
+
 export type AcceptsTaskReturnsNothing = (newTask: Task) => void
 
 export type FetchTasksAction = {|
@@ -63,6 +68,15 @@ export type RemoveNotificationAction = {|
   payload: string,
 |}
 
+export type SetBoardAction = {|
+  type: 'SET_BOARD',
+  payload: Board,
+|}
+
+export type RemoveBoardAction = {|
+  type: 'REMOVE_BOARD'
+|}
+
 export type UserAction = SetUserAction | RemoveUserAction
 
 export type TasksAction = FetchTasksAction | AddTaskAction
@@ -70,12 +84,14 @@ export type TasksAction = FetchTasksAction | AddTaskAction
 
 export type NotificationAction = AddNotificationAction | RemoveNotificationAction
 
+export type BoardAction = SetBoardAction | RemoveBoardAction
 
-export type Action = UserAction | TasksAction | NotificationAction
+export type Action = UserAction | TasksAction | NotificationAction | BoardAction
 
 export type TasksState = Array<Task>
 export type UserState = ?User
 export type NotificationsState = Array<NotificationType>
+export type BoardState = ?Board
 
 export type State = {
   +user: UserState,

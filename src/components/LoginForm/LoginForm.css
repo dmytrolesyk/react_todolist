@@ -21,3 +21,14 @@
 .center {
   text-align: center;
 }
+
+
+.checkbox-label-registration::before {
+  left: 430px;
+  top: 0px;
+}
+
+.checkbox-label-registration::after {
+  left: 437px;
+  top: 0px;
+}

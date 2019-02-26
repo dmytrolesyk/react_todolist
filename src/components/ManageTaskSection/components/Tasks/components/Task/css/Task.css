@@ -32,16 +32,12 @@ input[type="checkbox"]:checked + .checkbox-label::after {
   border: 2px solid #6a1979;
   border-radius: 3px;
   position: absolute;
-  left: 18px;
-  top: 11px;
   cursor: pointer;
 }
 
 .checkbox-label::after {
   content: '';
   position: absolute;
-  left: 25px;
-  top: 11px;
   width: 7px;
   height: 13px;
   border: 2px solid;
@@ -51,6 +47,18 @@ input[type="checkbox"]:checked + .checkbox-label::after {
   transition: .3s opacity;
   cursor: pointer;
 }
+
+.checkbox-label-task::before {
+  left: 18px;
+  top: 11px;
+}
+
+.checkbox-label-task::after {
+  left: 25px;
+  top: 11px;
+}
+
+
 
 .delete-item-icon {
   color: #6a1979;
@@ -71,11 +79,11 @@ input[type="checkbox"]:checked + .checkbox-label::after {
 
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?aakti9');
-  src:  url('fonts/icomoon.eot?aakti9#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?aakti9') format('truetype'),
-    url('fonts/icomoon.woff?aakti9') format('woff'),
-    url('fonts/icomoon.svg?aakti9#icomoon') format('svg');
+  src:  url('/fonts/icomoon.eot?aakti9');
+  src:  url('/fonts/icomoon.eot?aakti9#iefix') format('embedded-opentype'),
+    url('/fonts/icomoon.ttf?aakti9') format('truetype'),
+    url('/fonts/icomoon.woff?aakti9') format('woff'),
+    url('/fonts/icomoon.svg?aakti9#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }

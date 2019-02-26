@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  boardType: {
+    type: String,
+    required: true,
+  },
   tasks: [],
 })
 

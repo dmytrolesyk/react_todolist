@@ -38,9 +38,11 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',
+      inject: false,
     }),
   ],
   devServer: {
+    contentBase: path.join(__dirname, 'dist'),
     historyApiFallback: true,
   },
 }

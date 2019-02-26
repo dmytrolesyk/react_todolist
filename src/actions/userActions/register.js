@@ -11,6 +11,7 @@ const register = (
   username:string,
   password:string,
   conirmPassword:string,
+  publicBoard: boolean,
 ):ThunkAction => async (dispatch: Dispatch) => {
   if (!username || !password) {
     dispatch(addNotification('failure', 'Input username and password'))
@@ -20,7 +21,7 @@ const register = (
     dispatch(addNotification('failure', 'Make sure the password matches the confirmation!'))
     return
   }
-  const user = await http.post(`${config.HOST}:${config.PORT}/register`, { username, password })
+  const user = await http.post(`${config.HOST}:${config.PORT}/register`, { username, password, publicBoard })
   if (user.success) {
     user.data.token = `Bearer ${user.data.token}`
     localStorage.setItem('user', JSON.stringify(user.data))

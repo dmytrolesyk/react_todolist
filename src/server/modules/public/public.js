@@ -10,7 +10,7 @@ const config = require('../../../../config')
 const publicRoutes = new Router()
 
 const register = async (ctx) => {
-  const { username, password } = ctx.request.body
+  const { username, password, publicBoard } = ctx.request.body
   const existingUser = await UserModel.find({ username })
   if (existingUser[0]) {
     ctx.body = {
@@ -21,6 +21,7 @@ const register = async (ctx) => {
     const newUser = new UserModel({
       username,
       password,
+      boardType: publicBoard ? 'public' : 'private',
     })
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(newUser.password, salt)
@@ -36,6 +37,7 @@ const register = async (ctx) => {
       data: {
         username: user.username,
         token,
+        boardType: user.boardType,
         userId: user._id,
       },
     }
@@ -56,6 +58,7 @@ const login = async (ctx) => {
       data: {
         username: user.username,
         token,
+        boardType: user.boardType,
         userId: user._id,
       },
     }
