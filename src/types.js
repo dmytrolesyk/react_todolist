@@ -3,6 +3,7 @@
 export type Task = {|
   _id: string,
   caption: string,
+  author?: string,
   completed: boolean,
 |}
 
@@ -18,9 +19,16 @@ export type NotificationType = {|
   msg: string,
 |}
 
+export type ErrorType = {
+  id: string,
+  message: string,
+}
+
 export type Board = {|
   id: string,
-  name: string,
+  name?: string,
+  tasks: Array<Task>,
+  error: string,
 |}
 
 export type AcceptsTaskReturnsNothing = (newTask: Task) => void
@@ -37,7 +45,7 @@ export type AddTaskAction = {|
 
 export type DeleteTaskAction = {|
   type: 'DELETE_TASK',
-  payload: string,
+  payload: Task,
 |}
 
 export type UpdateTaskAction = {|
@@ -46,7 +54,8 @@ export type UpdateTaskAction = {|
 |}
 
 export type ClearTasksAction = {|
-  type: 'CLEAR_TASKS'
+  type: 'CLEAR_TASKS',
+  payload: string,
 |}
 
 export type SetUserAction = {|
@@ -68,34 +77,29 @@ export type RemoveNotificationAction = {|
   payload: string,
 |}
 
-export type SetBoardAction = {|
-  type: 'SET_BOARD',
+export type AddBoardAction = {|
+  type: 'ADD_BOARD',
   payload: Board,
 |}
 
-export type RemoveBoardAction = {|
-  type: 'REMOVE_BOARD'
-|}
 
 export type UserAction = SetUserAction | RemoveUserAction
 
-export type TasksAction = FetchTasksAction | AddTaskAction
-| DeleteTaskAction | UpdateTaskAction | ClearTasksAction | RemoveUserAction
-
 export type NotificationAction = AddNotificationAction | RemoveNotificationAction
 
-export type BoardAction = SetBoardAction | RemoveBoardAction
+export type BoardAction = AddBoardAction | AddTaskAction
+| DeleteTaskAction | UpdateTaskAction | ClearTasksAction | RemoveUserAction
 
-export type Action = UserAction | TasksAction | NotificationAction | BoardAction
+export type Action = UserAction | NotificationAction | BoardAction
 
-export type TasksState = Array<Task>
+// export type TasksState = Array<Task>
 export type UserState = ?User
 export type NotificationsState = Array<NotificationType>
-export type BoardState = ?Board
+export type BoardState = Array<Board>
 
 export type State = {
   +user: UserState,
-  +tasks: TasksState,
+  +boards: BoardState,
   +notifications: NotificationsState,
 }
 

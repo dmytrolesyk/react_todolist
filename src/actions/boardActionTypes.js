@@ -1,4 +1,7 @@
 /** @flow */
 
-export const SET_BOARD:string = 'SET_BOARD'
-export const REMOVE_BOARD:string = 'REMOVE_BOARD'
+export const ADD_BOARD:string = 'ADD_BOARD'
+export const ADD_TASK:string = 'ADD_TASK'
+export const DELETE_TASK:string = 'DELETE_TASK'
+export const UPDATE_TASK:string = 'UPDATE_TASK'
+export const CLEAR_TASKS:string = 'CLEAR_TASKS'

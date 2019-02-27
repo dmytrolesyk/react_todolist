@@ -3,8 +3,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import classnames from 'classnames'
-import updateTaskAction from '../../../../../../actions/tasksActions/updateTask'
-import deleteTaskAction from '../../../../../../actions/tasksActions/deleteTask'
+import updateTaskAction from '../../../../../../actions/boardActions/updateTask'
+import deleteTaskAction from '../../../../../../actions/boardActions/deleteTask'
 
 import type { User, Task as TaskType, AcceptsTaskReturnsNothing } from '../../../../../../types'
 import './css/Task.css'

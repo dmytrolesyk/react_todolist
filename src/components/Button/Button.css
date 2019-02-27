@@ -48,6 +48,11 @@
   background-color: #cc1c36;
 }
 
+.btn-blue {
+  background-color:#3680f7;
+}
+
+
 .btn-transparent {
   color: #6a1979;
   font-size: 16px;
@@ -60,6 +65,12 @@
   top: 10px;
 }
 
+.btn-home {
+  position: absolute;
+  right: 100px;
+  top: 10px;
+}
+
 .btn-block {
   margin-top: 30px;
   display: block;
@@ -68,4 +79,9 @@
 
 .btn-clear-tasks {
   margin-top: 20px
+}
+
+.btn-link {
+  text-decoration: none;
+  font-size: 13.3333px;
 }

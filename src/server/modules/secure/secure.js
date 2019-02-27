@@ -13,17 +13,38 @@ secureRoutes.use(koajwt({ secret: config.JWT_SECRET }))
 
 const getUser = async (ctx) => {
   const { userId } = ctx.params
-  const user = await UserModel.findOne({ _id: userId })
-  ctx.body = user
+  try {
+    const user = await UserModel.findOne({ _id: userId })
+    if (user.boardType === 'private' && userId !== ctx.state.user.userId) {
+      ctx.body = {
+        success: false,
+        data: {
+          id: user._id,
+          error: 'Access denied',
+        },
+      }
+    } else {
+      ctx.body = {
+        success: true,
+        data: {
+          name: user.username,
+          id: user._id,
+        },
+      }
+    }
+  } catch (e) {
+    ctx.body = {
+      success: false,
+      data: {
+        error: 'Not found',
+      },
+    }
+  }
 }
 
 const getUserTasks = async (ctx) => {
   const { user } = ctx.params
-  if (user === ctx.state.user.userId) {
-    ctx.body = await TaskModel.find({ author: user })
-  } else {
-    ctx.body = 'Unauthorized user'
-  }
+  ctx.body = await TaskModel.find({ author: user })
 }
 
 const getSingleTask = async (ctx) => {
@@ -33,13 +54,13 @@ const getSingleTask = async (ctx) => {
 }
 
 const addNewTask = async (ctx) => {
-  const { caption, userId } = ctx.request.body
+  const { caption, boardId } = ctx.request.body
   const task = TaskModel({
     caption,
     completed: false,
-    author: userId,
+    author: boardId,
   })
-  const user = await UserModel.findOne({ _id: userId })
+  const user = await UserModel.findOne({ _id: boardId })
   const taskId = task._id
   user.tasks.push(taskId)
   await user.save()

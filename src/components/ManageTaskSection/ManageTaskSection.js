@@ -5,9 +5,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import addNotificationAction from '../../actions/notificationsActions/addNotification'
-import updateTaskAction from '../../actions/tasksActions/updateTask'
-import fetchTasksAction from '../../actions/tasksActions/fetchTasks'
-import clearTasksAction from '../../actions/tasksActions/clearTasks'
+import updateTaskAction from '../../actions/boardActions/updateTask'
+import clearTasksAction from '../../actions/boardActions/clearTasks'
 
 
 import TitleHolder from '../TitleHolder'
@@ -15,16 +14,20 @@ import Button from '../Button'
 import TextInputHolder from '../TextInputHolder'
 import Tasks from './components/Tasks'
 
-import type { Task, User, AcceptsTaskReturnsNothing } from '../../types'
+import type {
+  Task,
+  User,
+  AcceptsTaskReturnsNothing,
+  Board,
+} from '../../types'
 
 import './ManageTaskSection.css'
 
 
 type Props = {
-  tasks: Array<Task>,
+  currentBoard: Board,
   user: User,
-  fetchTasks: (user: User)=>void,
-  clearTasks: (user: User) => void,
+  clearTasks: (boardId: string, token:string) => void,
   updateTask: (task: Task, token: string) => void,
   addNotification: (status: string, msg: string) => void,
 }
@@ -48,11 +51,6 @@ class ManageTaskSection extends Component<Props, State> {
     }
   }
 
-  componentDidMount() {
-    const { fetchTasks, user } = this.props
-    fetchTasks(user)
-  }
-
   setEditState: AcceptsTaskReturnsNothing = (task) => {
     this.setState({
       editState: true,
@@ -70,7 +68,7 @@ class ManageTaskSection extends Component<Props, State> {
   }
 
   filterTasks = ():Array<Task> => {
-    const { tasks } = this.props
+    const { currentBoard: { tasks } } = this.props
     const { filterInput } = this.state
     return tasks.filter(task => task.caption.toLowerCase().includes(filterInput.toLowerCase()))
   }
@@ -112,9 +110,11 @@ class ManageTaskSection extends Component<Props, State> {
       editState,
     } = this.state
     const {
-      tasks, user, clearTasks,
+      currentBoard,
+      user,
+      clearTasks,
     } = this.props
-    const tasksToDisplay: Array<Task> = editState ? tasks : this.filterTasks()
+    const tasksToDisplay: Array<Task> = editState ? currentBoard.tasks : this.filterTasks()
     return (
       <div className="manage-tasks-section">
         <TitleHolder
@@ -150,7 +150,7 @@ class ManageTaskSection extends Component<Props, State> {
             size="btn-regular"
             text="Clear Tasks"
             optClasses="btn-clear-tasks"
-            onClick={() => clearTasks(user)}
+            onClick={() => clearTasks(currentBoard.id, user.token)}
           />
         ) : null}
         {editState ? (
@@ -176,16 +176,10 @@ class ManageTaskSection extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = state => ({
-  tasks: state.tasks,
-  user: state.user,
-})
-
 const mapDispatchToProps = {
   addNotification: addNotificationAction,
   updateTask: updateTaskAction,
-  fetchTasks: fetchTasksAction,
   clearTasks: clearTasksAction,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManageTaskSection)
+export default connect(null, mapDispatchToProps)(ManageTaskSection)

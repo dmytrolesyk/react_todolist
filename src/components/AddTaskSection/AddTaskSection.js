@@ -4,20 +4,21 @@ import React, { Component } from 'react'
 
 import { connect } from 'react-redux'
 import addNotificationAction from '../../actions/notificationsActions/addNotification'
-import addTaskAction from '../../actions/tasksActions/addTask'
+import addTaskAction from '../../actions/boardActions/addTask'
 
 import TitleHolder from '../TitleHolder'
 import TextInputHolder from '../TextInputHolder'
 import Button from '../Button'
 
-import type { User } from '../../types'
+import type { User, Board } from '../../types'
 
 import './AddTaskSection.css'
 
 type Props = {
-  addTask: (caption: string, user: User) => any,
+  addTask: (caption: string, boardId: string, token: string) => any,
   user: User,
-  addNotification: (status: string, msg: string) => any
+  addNotification: (status: string, msg: string) => any,
+  currentBoard: Board,
 }
 
 type State = {
@@ -33,14 +34,17 @@ class AddTaskSection extends Component<Props, State> {
 
   addNewTaskHandler = ():void => {
     const {
-      addTask, user, addNotification,
+      addTask,
+      user,
+      addNotification,
+      currentBoard,
     } = this.props
     const { taskInput } = this.state
     if (!taskInput) {
       addNotification('failure', 'You need to input some value')
       return
     }
-    addTask(taskInput, user)
+    addTask(taskInput, currentBoard.id, user.token)
 
     this.setState({
       taskInput: '',
@@ -72,13 +76,9 @@ class AddTaskSection extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user,
-})
-
 const mapDispatchToProps = {
   addNotification: addNotificationAction,
   addTask: addTaskAction,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddTaskSection)
+export default connect(null, mapDispatchToProps)(AddTaskSection)

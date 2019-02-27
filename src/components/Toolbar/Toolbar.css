@@ -12,7 +12,24 @@
 }
 .board {
   position: absolute;
-  left: 10px;
+  right: 200px;
   color: #6a1979;
-  top: 35px;
+  top: 10px;
+  border-radius: 4px;
+  padding: 7px 10px;
+  text-align: center;
+  border: 2px solid #6a1979;
+}
+
+.settings-icon {
+  position: absolute;
+  right: 110px;
+  font-size: 26px;
+  color: #6a1979;
+  top: 15px;
+  cursor: pointer;
+}
+
+.settings-icon:hover {
+  opacity: 0.7;
 }
