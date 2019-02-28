@@ -5,9 +5,10 @@ import { handleActions } from 'redux-actions'
 import {
   SET_USER,
   REMOVE_USER,
+  UPDATE_USER,
 } from '../actions/userActionTypes'
 
-import type { UserState, UserAction, SetUserAction } from '../types'
+import type { UserState, UserAction, SetUserAction, UpdateUserAction } from '../types'
 
 const userFromLocalStorage:?string = localStorage.getItem('user')
 let initialState
@@ -20,4 +21,8 @@ if (typeof userFromLocalStorage === 'string') {
 export default handleActions<UserState, UserAction>({
   [SET_USER]: (state: UserState, action: SetUserAction):UserState => action.payload,
   [REMOVE_USER]: ():null => null,
+  [UPDATE_USER]: (state: UserState, action: UpdateUserAction):UserState => ({
+    ...state,
+    boardType: action.payload.boardType,
+  })
 }, initialState)

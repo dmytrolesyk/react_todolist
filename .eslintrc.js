@@ -12,5 +12,6 @@ module.exports = {
         "jsx-a11y/label-has-associated-control": 0,
         "jsx-a11y/label-has-for": 0,
         "no-underscore-dangle": 0,
+        "react/destructuring-assignment": [<enabled>, "always", { "ignoreClassFields": <boolean> }],
     }
 };

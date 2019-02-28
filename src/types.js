@@ -11,6 +11,7 @@ export type User = {|
   username: string,
   token: string,
   userId: string,
+  boardType: string,
 |}
 
 export type NotificationType = {|
@@ -67,6 +68,11 @@ export type RemoveUserAction = {|
   type: 'REMOVE_USER'
 |}
 
+export type UpdateUserAction = {|
+    type: 'UPDATE_USER',
+    payload: User,
+|}
+
 export type AddNotificationAction = {|
   type: 'ADD_NOTIFICATION',
   payload: NotificationType,
@@ -82,15 +88,24 @@ export type AddBoardAction = {|
   payload: Board,
 |}
 
+export type GetPublicBoardsAction = {|
+  type: 'GET_PUBLIC_BOARDS',
+  payload: Array<Board>  
+|}
 
-export type UserAction = SetUserAction | RemoveUserAction
+export type ModalAction = {
+  type: 'TOGGLE_MODAL'
+}
+
+
+export type UserAction = SetUserAction | RemoveUserAction | UpdateUserAction
 
 export type NotificationAction = AddNotificationAction | RemoveNotificationAction
 
 export type BoardAction = AddBoardAction | AddTaskAction
-| DeleteTaskAction | UpdateTaskAction | ClearTasksAction | RemoveUserAction
+| DeleteTaskAction | UpdateTaskAction | ClearTasksAction | RemoveUserAction | GetPublicBoardsAction
 
-export type Action = UserAction | NotificationAction | BoardAction
+export type Action = UserAction | NotificationAction | BoardAction | ModalAction
 
 // export type TasksState = Array<Task>
 export type UserState = ?User
@@ -101,6 +116,7 @@ export type State = {
   +user: UserState,
   +boards: BoardState,
   +notifications: NotificationsState,
+  +showModal: boolean,
 }
 
 type GetState = () => State

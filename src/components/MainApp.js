@@ -8,10 +8,13 @@ import AddTaskSection from './AddTaskSection/AddTaskSection'
 import ManageTaskSection from './ManageTaskSection'
 import logoutAction from '../actions/userActions/logoutAction'
 import getBoardDataAction from '../actions/boardActions/getBoardData'
+import toggleModalAction from '../actions/modalActions/toggleModal'
+import ModalPortal from './ModalPortal'
+import Modal from './ModalPortal/Modal'
 import NotFound from './NotFound'
 import Spinner from './Spinner'
 
-import type { User, Board } from '../types'
+import type { User, Board, ModalAction } from '../types'
 
 type Props = {
   user:User,
@@ -19,6 +22,7 @@ type Props = {
   match: any,
   getBoardData: (boardId: string, token: string)=>void,
   currentBoard: Board,
+  toggleModal: () => ModalAction
 }
 
 class MainApp extends Component<Props, *> {
@@ -47,15 +51,24 @@ class MainApp extends Component<Props, *> {
       user,
       logout,
       currentBoard,
+      toggleModal,
     } = this.props
     if (currentBoard) {
       return (
         <>
-          <Toolbar user={user} currentBoard={currentBoard} logout={logout} />
+          <Toolbar
+            user={user}
+            currentBoard={currentBoard}
+            logout={logout}
+            toggleModal={toggleModal}
+          />
           {!currentBoard.error ? (
             <>
               <AddTaskSection user={user} currentBoard={currentBoard} />
               <ManageTaskSection user={user} currentBoard={currentBoard} />
+              <ModalPortal>
+                <Modal />
+              </ModalPortal>
             </>
           ) : <NotFound /> }
         </>
@@ -77,6 +90,7 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = {
   getBoardData: getBoardDataAction,
   logout: logoutAction,
+  toggleModal: toggleModalAction,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainApp)

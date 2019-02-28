@@ -33,3 +33,7 @@
 .settings-icon:hover {
   opacity: 0.7;
 }
+
+.settings-icon:focus {
+  outline: none;
+}

@@ -3,6 +3,7 @@
 import { handleActions } from 'redux-actions'
 
 import {
+  GET_PUBLIC_BOARDS,
   ADD_BOARD,
   ADD_TASK,
   DELETE_TASK,
@@ -20,6 +21,7 @@ import type {
   DeleteTaskAction,
   ClearTasksAction,
   UpdateTaskAction,
+  GetPublicBoardsAction,
 } from '../types'
 
 export default handleActions <BoardState, BoardAction>({
@@ -27,6 +29,10 @@ export default handleActions <BoardState, BoardAction>({
     state: BoardState,
     action: AddBoardAction,
   ): BoardState => [...state, action.payload],
+  [GET_PUBLIC_BOARDS]: (
+    state: BoardState,
+    action: GetPublicBoardsAction,
+  ):BoardState => action.payload,
   [ADD_TASK]: (
     state: BoardState,
     action: AddTaskAction,

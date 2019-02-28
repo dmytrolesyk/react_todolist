@@ -47,6 +47,13 @@ const getUserTasks = async (ctx) => {
   ctx.body = await TaskModel.find({ author: user })
 }
 
+const updateUser = async (ctx) => {
+  const updatedUser = ctx.request.body
+  const user = await UserModel.findOneAndUpdate({ _id: updatedUser.userId },
+    updatedUser, { new: true })
+  ctx.body = user
+}
+
 const getSingleTask = async (ctx) => {
   const { id } = ctx.params
   const taskItem = await TaskModel.find({ _id: id })
@@ -90,7 +97,27 @@ const deleteAllTasks = async (ctx) => {
   ctx.body = []
 }
 
+const getPublicUsers = async (ctx) => {
+  try {
+    const publicUsers = await UserModel.find({ boardType: "public" })
+    const responseData = publicUsers.map(user => ({ id: user._id, username: user.username }))
+    ctx.body = {
+      success: true,
+      data: responseData
+    }
+  } catch (e) {
+    ctx.body = {
+      success: false,
+      data: e
+    }
+  }
+}
+
 secureRoutes.get('/users/:userId', getUser)
+
+secureRoutes.put('/users', updateUser)
+
+secureRoutes.get('/public-users', getPublicUsers)
 
 secureRoutes.get('/tasks/:user', getUserTasks)
 

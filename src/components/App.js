@@ -9,6 +9,7 @@ import NotificationPortal from './NotificationPortal'
 import GuestRoutes from './GuestRoutes'
 import SecureRoutes from './SecureRoutes'
 
+
 import type { User, NotificationType } from '../types'
 
 import './App.css'
